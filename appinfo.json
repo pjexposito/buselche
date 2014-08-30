@@ -41,16 +41,6 @@
                 "file": "images/arriba.png",
                 "name": "ICONO_ARRIBA",
                 "type": "png"
-            },
-            {
-                "file": "images/rw.png",
-                "name": "ICON_REWIND",
-                "type": "png"
-            },
-            {
-                "file": "images/ff.png",
-                "name": "ICON_FAST_FORWARD",
-                "type": "png"
             }
         ]
     },

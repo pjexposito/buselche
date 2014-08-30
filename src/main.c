@@ -1,12 +1,25 @@
 #include <pebble.h>
 
+#define NUM_1_DEFAULT 0
+#define NUM_2_DEFAULT 0
+#define NUM_3_DEFAULT 0
+#define NUM_LETRA_DEFAULT 0
+
+#define NUM_1_PKEY 1
+#define NUM_2_PKEY 2
+#define NUM_3_PKEY 3
+#define NUM_LETRA_PKEY 4
+
+  
+  
 Window* window;
 static Layer *marcador;
 ActionBarLayer *action_bar;
 
 
 TextLayer *textolinea_layer, *textoparada_layer, *dig1_layer, *dig2_layer, *dig3_layer, *text_layer2, *t1_layer;
-int numero1=0, numero2=0, numero3=0, letra=0, posicion=0, numero_parada;
+static int numero1, numero2, numero3, letra;
+int posicion=0, numero_parada;
 char texto[1024];
 char tiempo1[1024];
 char tiempo2[1024];
@@ -283,8 +296,22 @@ void marcador_update_callback(Layer *me, GContext* ctx)
 } 
 
 
+void pinta_datos(void)
+{
+  snprintf(buf1, sizeof(buf1), "%d", numero1);
+	text_layer_set_text(dig1_layer, buf1);
+  
+  snprintf(buf2, sizeof(buf2), "%d", numero2);
+	text_layer_set_text(dig2_layer, buf2);
+  
+  snprintf(buf3, sizeof(buf3), "%d", numero3);
+	text_layer_set_text(dig3_layer, buf3);
+  
+  text_layer_set_text(text_layer2, lineas[letra]); 
 
-
+}
+  
+  
 void click_config_provider(void *context) 
 {
 	window_single_click_subscribe(BUTTON_ID_UP, up_click_handler);
@@ -385,6 +412,8 @@ void window_load(Window *window)
 	text_layer_set_text(text_layer2, "A");
   
   
+  pinta_datos();  
+  
 }
 
 /* Un-load all Window sub-elements */
@@ -422,13 +451,24 @@ void init()
 	app_message_open(app_message_inbox_size_maximum(), app_message_outbox_size_maximum());		//Largest possible input and output buffer sizes
 	
 	window_set_window_handlers(window, (WindowHandlers) handlers);
-	//window_set_click_config_provider(window, click_config_provider);
+  
+  // Lee valores guardados
+  numero1 = persist_exists(NUM_1_PKEY) ? persist_read_int(NUM_1_PKEY) : NUM_1_DEFAULT;
+  numero2 = persist_exists(NUM_2_PKEY) ? persist_read_int(NUM_2_PKEY) : NUM_2_DEFAULT;
+  numero3 = persist_exists(NUM_3_PKEY) ? persist_read_int(NUM_3_PKEY) : NUM_3_DEFAULT;
+  letra = persist_exists(NUM_LETRA_PKEY) ? persist_read_int(NUM_LETRA_PKEY) : NUM_LETRA_DEFAULT;
+  
 	window_stack_push(window, true);
 }
 
 /* De-initialize the main app elements */
 void deinit()
 {
+  persist_write_int(NUM_1_PKEY, numero1);
+  persist_write_int(NUM_2_PKEY, numero2);
+  persist_write_int(NUM_3_PKEY, numero3);
+  persist_write_int(NUM_LETRA_PKEY, letra);
+
 	window_destroy(window);
 }
 
