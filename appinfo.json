@@ -1,0 +1,64 @@
+{
+    "appKeys": {
+        "KEY_T1": 0,
+        "KEY_T2": 1
+    },
+    "capabilities": [
+        ""
+    ],
+    "companyName": "Pedro",
+    "longName": "Bus Elche",
+    "projectType": "native",
+    "resources": {
+        "media": [
+            {
+                "file": "images/icono.png",
+                "menuIcon": true,
+                "name": "IMAGE_ICONO_PRINCIPAL",
+                "type": "png"
+            },
+            {
+                "file": "images/buscar.png",
+                "name": "ICONO_BUSCAR",
+                "type": "png"
+            },
+            {
+                "file": "images/play.png",
+                "name": "ICONO_PLAY",
+                "type": "png"
+            },
+            {
+                "file": "images/pulsar.png",
+                "name": "ICON_PULSAR",
+                "type": "png"
+            },
+            {
+                "file": "images/abajo.png",
+                "name": "ICONO_ABAJO",
+                "type": "png"
+            },
+            {
+                "file": "images/arriba.png",
+                "name": "ICONO_ARRIBA",
+                "type": "png"
+            },
+            {
+                "file": "images/rw.png",
+                "name": "ICON_REWIND",
+                "type": "png"
+            },
+            {
+                "file": "images/ff.png",
+                "name": "ICON_FAST_FORWARD",
+                "type": "png"
+            }
+        ]
+    },
+    "shortName": "Bus Elche",
+    "uuid": "383f627a-1b76-47c2-a3d1-e63e305dc8cb",
+    "versionCode": 1,
+    "versionLabel": "1.0",
+    "watchapp": {
+        "watchface": false
+    }
+}
