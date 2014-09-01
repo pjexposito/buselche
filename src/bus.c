@@ -191,6 +191,16 @@ void select_click_handler(ClickRecognizerRef recognizer, void *context)
 }
 
 
+void select_long_click_handler(ClickRecognizerRef recognizer, void *context)
+{
+  persist_write_int(FAV5_PKEY, persist_read_int(FAV4_PKEY));
+  persist_write_int(FAV4_PKEY, persist_read_int(FAV3_PKEY));
+  persist_write_int(FAV3_PKEY, persist_read_int(FAV2_PKEY));
+  persist_write_int(FAV2_PKEY, persist_read_int(FAV1_PKEY));
+  persist_write_int(FAV1_PKEY, (numero1*10000) + (numero2*1000) + (numero3*100) + letra);
+  text_layer_set_text(mensaje_layer, "Parada agregada a favoritos.");
+
+}
 
 void marcador_update_callback(Layer *me, GContext* ctx) 
 {
@@ -222,6 +232,7 @@ void click_config_provider(void *context)
 	window_single_click_subscribe(BUTTON_ID_UP, up_click_handler);
 	window_single_click_subscribe(BUTTON_ID_DOWN, down_click_handler);
 	window_single_click_subscribe(BUTTON_ID_SELECT, select_click_handler);
+  window_long_click_subscribe(BUTTON_ID_SELECT, 2000, select_long_click_handler, NULL);
 }
 
 
@@ -309,6 +320,7 @@ void window_unload(Window *window)
   text_layer_destroy(linea_layer);
   text_layer_destroy(mensaje_layer);
   layer_destroy(marcador);
+   window_destroy(window);
 
 }
 
@@ -329,6 +341,8 @@ void carga_paradas(int n1, int n2, int n3, int l)
 	window_set_window_handlers(window, (WindowHandlers) handlers);
 
 	window_stack_push(window, true);
+
+
 }
 
 

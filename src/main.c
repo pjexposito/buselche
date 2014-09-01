@@ -111,15 +111,6 @@ static void window_load(Window *window) {
   int num_a_items = 0;
   int num_a2_items = 0;
  
-  /////////
-  /////////
-  /////////
-  // OJO, es una prueba sólo
-  persist_write_int(FAV1_PKEY, 12303);
-  persist_write_int(FAV2_PKEY, 99900);
-  persist_write_int(FAV3_PKEY, 76309);
-  persist_write_int(FAV4_PKEY, 33301);
-  persist_write_int(FAV5_PKEY, 11100);
 
   
 
@@ -140,44 +131,35 @@ static void window_load(Window *window) {
   texto_favoritos(FAV1_PKEY);  
   strcpy(tfav1,texto);
   FAVORITOS_menu_items[num_a2_items++] = (SimpleMenuItem){
-    .title = "Parada 1",
-	  .subtitle = tfav1,
+    .title = tfav1,
+	  //.subtitle = tfav1,
     .callback = FAV1_select_callback,
   };
   texto_favoritos(FAV2_PKEY);  
   strcpy(tfav2,texto);
-
   FAVORITOS_menu_items[num_a2_items++] = (SimpleMenuItem){
-    .title = "Parada 2",
-	  .subtitle = tfav2,
+    .title = tfav2,
     .callback = FAV2_select_callback,
 
   };
   texto_favoritos(FAV3_PKEY); 
   strcpy(tfav3,texto);
-
   FAVORITOS_menu_items[num_a2_items++] = (SimpleMenuItem){
-    .title = "Parada 3",
-	  .subtitle = tfav3,
+    .title = tfav3,
     .callback = FAV3_select_callback,
 
   };
   texto_favoritos(FAV4_PKEY); 
   strcpy(tfav4,texto);
-
   FAVORITOS_menu_items[num_a2_items++] = (SimpleMenuItem){
-    .title = "Parada 4",
-	  .subtitle = tfav4,
+    .title = tfav4,
     .callback = FAV4_select_callback,
 
   };
   texto_favoritos(FAV5_PKEY); 
   strcpy(tfav5,texto);
-
-
   FAVORITOS_menu_items[num_a2_items++] = (SimpleMenuItem){
-    .title = "Parada 5",
-	  .subtitle = tfav5,
+    .title = tfav5,
     .callback = FAV5_select_callback,
 
   };
