@@ -221,7 +221,7 @@ void marcador_update_callback(Layer *me, GContext* ctx)
       graphics_fill_rect(ctx, GRect(92, 37, 15, 2), 0, GCornerNone);  
 			break;    
 		case 3:
-      graphics_fill_rect(ctx, GRect(45, 67, 20, 2), 0, GCornerNone);  
+      graphics_fill_rect(ctx, GRect(48, 67, 20, 2), 0, GCornerNone);  
 			break;     
     }
 } 
@@ -291,7 +291,7 @@ void window_load(Window *window)
   dig3_layer = init_text_layer(GRect(90, 7, 20, 30), GColorBlack, GColorClear, FONT_KEY_GOTHIC_28_BOLD, GTextAlignmentCenter);
 	layer_add_child(window_get_root_layer(window), (Layer*) dig3_layer);
   
-  linea_layer = init_text_layer(GRect(40, 37, 30, 30), GColorBlack, GColorClear, FONT_KEY_GOTHIC_28_BOLD, GTextAlignmentCenter);
+  linea_layer = init_text_layer(GRect(43, 37, 30, 30), GColorBlack, GColorClear, FONT_KEY_GOTHIC_28_BOLD, GTextAlignmentCenter);
 	layer_add_child(window_get_root_layer(window), (Layer*) linea_layer);
   
   pinta_datos();  
