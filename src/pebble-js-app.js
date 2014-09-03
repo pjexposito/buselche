@@ -35,13 +35,13 @@ function HTTPGET(url) {
     }
   else
     {
-    console.log("LA URL EXISTE. NO HAY ERROR");
+    //console.log("LA URL EXISTE. NO HAY ERROR");
     return req.responseText;
     }
 }
 
 function BuscaParadas(parada,linea) {
-  console.log("URL: http://www.auesa.es/paradas_qr/"+parada+".php?vari="+linea);
+    //console.log("URL: http://www.auesa.es/paradas_qr/"+parada+".php?vari="+linea);
 
     var response = HTTPGET("http://www.auesa.es/paradas_qr/"+parada+".php?vari="+linea);
   
@@ -58,36 +58,31 @@ function BuscaParadas(parada,linea) {
     else
       {
        var json = JSON.parse(response);
-       if (json.GetPasoParadaResult)
-         console.log("Existe el item JSON");
-       else
-         console.log("No existe JSON");   
-       //Convierte la respuesta de la web de Google en JSON, para parsearla
        if (json.status==1) 
        {
          if (json.GetPasoParadaResult)
          {
            t1 = json.GetPasoParadaResult.PasoParada.e1.minutos;
            t2 = json.GetPasoParadaResult.PasoParada.e2.minutos;
-           console.log("Hay datos");
+           //console.log("Hay datos");
          }
          else
          {
            t1 = "98";
            t2 = "98";
-           console.log("Existe la línea y la parada pero no hay datos (posiblemente no circulen autobueses a esas horas.");   
+           //console.log("Existe la línea y la parada pero no hay datos (posiblemente no circulen autobueses a esas horas.");   
          } 
        }
        else
        {
-         console.log("Esa linea no pasa por esa parada"); 
+         //console.log("Esa linea no pasa por esa parada"); 
          t1 = "99";
          t2 = "99";
        } 
       }
 	
 	//Mando a la consola los datos que he obtenido
-  console.log("Tiempo:" + t1 + ", " + t2);
+  //console.log("Tiempo:" + t1 + ", " + t2);
 	
 	//Este es el diccionario con los datos que voy a mandar al reloj
   dict = {"KEY_T1" : t1, "KEY_T2": t2};
@@ -101,7 +96,7 @@ function BuscaParadas(parada,linea) {
 Pebble.addEventListener("ready",
   function(e) {
 	//Se activa el reloj por primera vez. Se piden los datos por primera vez
-  console.log("Evento Ready");
+  //console.log("Evento Ready");
 
   }
 );
@@ -111,7 +106,7 @@ Pebble.addEventListener("ready",
 Pebble.addEventListener("appmessage",
   function(e) {
     //Se refresca la información
-    console.log("Mensaje recibido:" + e.payload.KEY_T1 + " " + e.payload.KEY_T2);
+    //console.log("Mensaje recibido:" + e.payload.KEY_T1 + " " + e.payload.KEY_T2);
 
   var parada=e.payload.KEY_T1;
   var linea=e.payload.KEY_T2;

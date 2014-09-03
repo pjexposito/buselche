@@ -52,7 +52,7 @@ void process_tuple(Tuple *t)
     {
 		case KEY_T1:
       strcat(tiempo1, t->value->cstring);
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Datos: %s %lu", t->value->cstring, t->key);
+        //APP_LOG(APP_LOG_LEVEL_DEBUG, "Datos: %s %lu", t->value->cstring, t->key);
 
       break;
 		case KEY_T2:
@@ -301,7 +301,7 @@ void window_load(Window *window)
 void window_unload(Window *window)
 {
   persist_write_int(PRINCIPAL_PKEY, (numero1*10000) + (numero2*1000) + (numero3*100) + letra);
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Se guarda: %d", (numero1*10000) + (numero2*1000) + (numero3*100) + letra);
+    //APP_LOG(APP_LOG_LEVEL_DEBUG, "Se guarda: %d", (numero1*10000) + (numero2*1000) + (numero3*100) + letra);
 
   
   gbitmap_destroy(arriba_bitmap);
