@@ -22,14 +22,16 @@ var dict;
 var t1 , t2;
 
 
-
 function HTTPGET(url) {
 	var req = new XMLHttpRequest();
   req.open("GET", url, false);
 	req.send(null);
+  
+   //console.log(url + " es " + req.status);
+
   if (req.status == "404") 
     {
-    console.log("ME HA DADO ERROR 404");
+    //console.log("ME HA DADO ERROR 404");
     return 1;
   
     }
@@ -110,6 +112,6 @@ Pebble.addEventListener("appmessage",
 
   var parada=e.payload.KEY_T1;
   var linea=e.payload.KEY_T2;
-  BuscaParadas(parada,linea);
+  BuscaParadas(parada, linea);
   }
 );
