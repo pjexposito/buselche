@@ -1,5 +1,3 @@
-#ifndef ES_h
-#define ES_h
 
 // Valor por defecto de el número de parada y la linea
 #define NUM_DEFAULT 0
@@ -14,6 +12,3 @@
  
   
 void carga_paradas(int n1, int n2, int n3, int l);
-
-
-#endif

@@ -1,16 +1,15 @@
 #include <pebble.h>
 #include "bus.h"  
-
-
-
-
+#include "db_bus.h"
+  
+  
 Window* window;
 // Barra de opciones
 ActionBarLayer *action_bar;
 
 // Capas del programa
 static Layer *marcador;
-TextLayer *textolinea_layer, *textoparada_layer, *dig1_layer, *dig2_layer, *dig3_layer, *linea_layer, *mensaje_layer;
+TextLayer *textolinea_layer, *textoparada_layer, *nombreparada_layer,*dig1_layer, *dig2_layer, *dig3_layer, *linea_layer, *mensaje_layer;
 
 
 // Variables de imágenes
@@ -33,7 +32,14 @@ enum {
 
 void pinta_datos(void)
 {
-  static char buffer1[]="12",buffer2[]="12",buffer3[]="12";
+  int numeroparada;
+  struct a_tag a3; /* structs */
+  numeroparada = (numero1*100) + (numero2*10) + numero3;
+     APP_LOG(APP_LOG_LEVEL_DEBUG, "Numero parada es %d", numeroparada);
+  a3 = return_struct(numeroparada);
+   APP_LOG(APP_LOG_LEVEL_DEBUG, "Parsing struct,  fields: c:%c, i:%3i, w:\"%s\"\n",
+      a3.c, a3.i, a3.w);
+  static char buffer1[]="12",buffer2[]="12",buffer3[]="12",buffer4[]="Calle chula de la muerte y ole";
 
   snprintf(buffer1, sizeof(buffer1), "%d", numero1);
 	text_layer_set_text(dig1_layer, buffer1);
@@ -42,6 +48,9 @@ void pinta_datos(void)
   snprintf(buffer3, sizeof(buffer3), "%d", numero3);
 	text_layer_set_text(dig3_layer, buffer3);
   text_layer_set_text(linea_layer, lineas[letra]); 
+  snprintf(buffer4, sizeof(buffer4), "%s", a3.w);
+	text_layer_set_text(nombreparada_layer, buffer4);
+  
 }
 
 void process_tuple(Tuple *t)
@@ -270,6 +279,11 @@ void window_load(Window *window)
   action_bar_layer_set_icon(action_bar, BUTTON_ID_SELECT, play_bitmap);
 
   //Capas principales del programa
+  
+  nombreparada_layer = init_text_layer(GRect(5, 30, 120, 25), GColorBlack, GColorClear, FONT_KEY_GOTHIC_18, GTextAlignmentLeft);
+  text_layer_set_text(nombreparada_layer, "Calle chula 3");
+	layer_add_child(window_get_root_layer(window), (Layer*) nombreparada_layer);
+  
   textoparada_layer = init_text_layer(GRect(5, 10, 120, 25), GColorBlack, GColorClear, FONT_KEY_GOTHIC_24, GTextAlignmentLeft);
   text_layer_set_text(textoparada_layer, "Parada:");
 	layer_add_child(window_get_root_layer(window), (Layer*) textoparada_layer);
@@ -312,6 +326,7 @@ void window_unload(Window *window)
   
   action_bar_layer_destroy(action_bar);
 
+  text_layer_destroy(nombreparada_layer);
   text_layer_destroy(textolinea_layer);
   text_layer_destroy(textoparada_layer);
   text_layer_destroy(dig1_layer);
