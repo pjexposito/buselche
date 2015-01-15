@@ -1,7 +1,6 @@
 #pragma once
   struct a_tag {
-   char c;
-   int i;
+   char *lineas;
    char *w;
 };
 

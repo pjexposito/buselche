@@ -11,4 +11,4 @@
 #define FAV5_PKEY 6  
  
   
-void carga_paradas(int n1, int n2, int n3, int l);
+void carga_paradas(int n1, int n2, int n3, int l, int fav);

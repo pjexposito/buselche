@@ -18,7 +18,7 @@ GBitmap *arriba_bitmap, *abajo_bitmap, *pulsar_bitmap, *play_bitmap, *buscar_bit
 
 // Lineas
 const char *lineas[]= {"A","B","C","D","E","F","G","H","I","J","K","L","R","R2"};
- 
+
 
 // Resto de variables
 char texto[1024], tiempo1[1024], tiempo2[1024];
@@ -32,14 +32,8 @@ enum {
 
 void pinta_datos(void)
 {
-  int numeroparada;
-  struct a_tag a3; /* structs */
-  numeroparada = (numero1*100) + (numero2*10) + numero3;
-     APP_LOG(APP_LOG_LEVEL_DEBUG, "Numero parada es %d", numeroparada);
-  a3 = return_struct(numeroparada);
-   APP_LOG(APP_LOG_LEVEL_DEBUG, "Parsing struct,  fields: c:%c, i:%3i, w:\"%s\"\n",
-      a3.c, a3.i, a3.w);
-  static char buffer1[]="12",buffer2[]="12",buffer3[]="12",buffer4[]="Calle chula de la muerte y ole";
+
+  static char buffer1[]="12",buffer2[]="12",buffer3[]="12";
 
   snprintf(buffer1, sizeof(buffer1), "%d", numero1);
 	text_layer_set_text(dig1_layer, buffer1);
@@ -48,8 +42,7 @@ void pinta_datos(void)
   snprintf(buffer3, sizeof(buffer3), "%d", numero3);
 	text_layer_set_text(dig3_layer, buffer3);
   text_layer_set_text(linea_layer, lineas[letra]); 
-  snprintf(buffer4, sizeof(buffer4), "%s", a3.w);
-	text_layer_set_text(nombreparada_layer, buffer4);
+
   
 }
 
@@ -123,6 +116,18 @@ void send_int(int16_t parada, const char *linea)
  	app_message_outbox_send();
 }
 
+void envia_peticion()
+  {
+  
+      text_layer_set_text(mensaje_layer, "Cargando...");
+      cargando = 1;
+      int numero_parada=(numero1*100)+(numero2*10)+numero3;
+      //Borro la variable de tiempo 1 y 2 antes de volver a pedir datos.
+      memset(&tiempo1[0], 0, sizeof(tiempo1));
+      memset(&tiempo2[0], 0, sizeof(tiempo2));
+      send_int(numero_parada,lineas[letra]);
+}
+
 void up_click_handler(ClickRecognizerRef recognizer, void *context) 
 {
    int tamano_array_lineas = sizeof(lineas)/sizeof(lineas[0]);
@@ -187,13 +192,7 @@ void select_click_handler(ClickRecognizerRef recognizer, void *context)
       action_bar_layer_set_icon(action_bar, BUTTON_ID_SELECT, buscar_bitmap);
       break;    
 		case 3:
-      text_layer_set_text(mensaje_layer, "Cargando...");
-      cargando = 1;
-      int numero_parada=(numero1*100)+(numero2*10)+numero3;
-      //Borro la variable de tiempo 1 y 2 antes de volver a pedir datos.
-      memset(&tiempo1[0], 0, sizeof(tiempo1));
-      memset(&tiempo2[0], 0, sizeof(tiempo2));
-      send_int(numero_parada,lineas[letra]);
+      envia_peticion();
       break;     
     }
   layer_mark_dirty(marcador);
@@ -276,12 +275,15 @@ void window_load(Window *window)
   //Asignación de iconos a la barra de opciones
   action_bar_layer_set_icon(action_bar, BUTTON_ID_UP, arriba_bitmap );
   action_bar_layer_set_icon(action_bar, BUTTON_ID_DOWN, abajo_bitmap);
-  action_bar_layer_set_icon(action_bar, BUTTON_ID_SELECT, play_bitmap);
+  if (posicion==3)
+    action_bar_layer_set_icon(action_bar, BUTTON_ID_SELECT, buscar_bitmap);
+  else
+    action_bar_layer_set_icon(action_bar, BUTTON_ID_SELECT, play_bitmap);
 
   //Capas principales del programa
   
   nombreparada_layer = init_text_layer(GRect(5, 30, 120, 25), GColorBlack, GColorClear, FONT_KEY_GOTHIC_18, GTextAlignmentLeft);
-  text_layer_set_text(nombreparada_layer, "Calle chula 3");
+  //text_layer_set_text(nombreparada_layer, "Calle chula 3");
 	layer_add_child(window_get_root_layer(window), (Layer*) nombreparada_layer);
   
   textoparada_layer = init_text_layer(GRect(5, 10, 120, 25), GColorBlack, GColorClear, FONT_KEY_GOTHIC_24, GTextAlignmentLeft);
@@ -309,6 +311,10 @@ void window_load(Window *window)
 	layer_add_child(window_get_root_layer(window), (Layer*) linea_layer);
   
   pinta_datos();  
+  if (posicion==3)
+    {
+    envia_peticion();
+  }
   
 }
 
@@ -340,7 +346,7 @@ void window_unload(Window *window)
 }
 
 /* Initialize the main app elements */
-void carga_paradas(int n1, int n2, int n3, int l)
+void carga_paradas(int n1, int n2, int n3, int l, int fav)
 {
   numero1 = n1;
   numero2 = n2;
@@ -354,7 +360,8 @@ void carga_paradas(int n1, int n2, int n3, int l)
   
 	app_message_register_inbox_received(in_received_handler);					 
 	window_set_window_handlers(window, (WindowHandlers) handlers);
-
+  if (fav==1)
+    posicion=3;
 	window_stack_push(window, true);
 
 

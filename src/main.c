@@ -152,7 +152,7 @@ void menu_select_callback(MenuLayer *menu_layer, MenuIndex *cell_index, void *da
       switch (cell_index->row) {
       case 0:
         valores = carga_datos(PRINCIPAL_PKEY);
-        carga_paradas(valores.v1,valores.v2,valores.v3,valores.v4);
+        carga_paradas(valores.v1,valores.v2,valores.v3,valores.v4, 0);
         break;
       }
       break;
@@ -161,23 +161,23 @@ void menu_select_callback(MenuLayer *menu_layer, MenuIndex *cell_index, void *da
       switch (cell_index->row) {
       case 0:
          valores = carga_datos(FAV1_PKEY);
-         carga_paradas(valores.v1,valores.v2,valores.v3,valores.v4);
+         carga_paradas(valores.v1,valores.v2,valores.v3,valores.v4, 1);
          break;
       case 1:
          valores = carga_datos(FAV2_PKEY);
-         carga_paradas(valores.v1,valores.v2,valores.v3,valores.v4);
+         carga_paradas(valores.v1,valores.v2,valores.v3,valores.v4, 1);
          break;
       case 2:
          valores = carga_datos(FAV3_PKEY);
-         carga_paradas(valores.v1,valores.v2,valores.v3,valores.v4);
+         carga_paradas(valores.v1,valores.v2,valores.v3,valores.v4, 1);
          break;
       case 3:
          valores = carga_datos(FAV4_PKEY);
-         carga_paradas(valores.v1,valores.v2,valores.v3,valores.v4);
+         carga_paradas(valores.v1,valores.v2,valores.v3,valores.v4, 1);
          break;
       case 4:
          valores = carga_datos(FAV5_PKEY);
-         carga_paradas(valores.v1,valores.v2,valores.v3,valores.v4);
+         carga_paradas(valores.v1,valores.v2,valores.v3,valores.v4, 1);
          layer_mark_dirty(menu_layer_get_layer(menu_layer));
          break;
       }

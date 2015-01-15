@@ -3,45 +3,30 @@
 
 struct a_tag return_struct(int parada) {
    struct a_tag a;
-     a.c = 'Y';
-   a.i = 88;
    a.w = "Sin datos";
    switch(parada)
    {
 		case 0:
-      a.c = 'Y';
-      a.i = 88;
+      a.lineas = "A";
       a.w = "Calle 0";
       break;
    case 1:
-      a.c = 'Y';
-      a.i = 88;
-      a.w = "Calle 1";
+      a.w = "Centro. Doctor Caro";
       break;
     case 2:
-      a.c = 'Y';
-      a.i = 88;
-      a.w = "Calle 2";
+      a.w = "Vicente Blasco Ibañez, 22";
       break;
-    case 10:
-      a.c = 'Y';
-      a.i = 88;
-      a.w = "Calle 10";
+    case 3:
+      a.w = "Vicente Blasco Ibañez, 80";
       break;     
-    case 12:
-      a.c = 'Y';
-      a.i = 88;
-      a.w = "Calle 12";
+    case 4:
+      a.w = "INEM Carrús";
       break;
-    case 100:
-      a.c = 'Y';
-      a.i = 88;
-      a.w = "Calle 100";
+    case 5:
+      a.w = "Pedro Moreno Sastre, 62";
       break;  
-    case 103:
-      a.c = 'Y';
-      a.i = 88;
-      a.w = "Calle 103";
+    case 6:
+      a.w = "Pedro Moreno Sastre, 80";
       break;
    }
   return a;
