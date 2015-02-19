@@ -1,6 +1,5 @@
 #include <pebble.h>
 #include "bus.h"  
-#include "db_bus.h"
   
   
 Window* window;
@@ -104,6 +103,8 @@ static void in_received_handler(DictionaryIterator *iter, void *context)
     layer_mark_dirty(marcador);
     action_bar_layer_set_icon(action_bar, BUTTON_ID_SELECT, play_bitmap);
     cargando = 0;
+    vibes_short_pulse();
+
 }
 
 void send_int(int16_t parada, const char *linea)
@@ -294,7 +295,7 @@ void window_load(Window *window)
   text_layer_set_text(textolinea_layer, "Linea:");
 	layer_add_child(window_get_root_layer(window), (Layer*) textolinea_layer);
 
-  mensaje_layer = init_text_layer(GRect(5, 70, 120, 80), GColorBlack, GColorClear, FONT_KEY_GOTHIC_24, GTextAlignmentLeft);
+  mensaje_layer = init_text_layer(GRect(5, 70, 120, 80), GColorBlack, GColorClear, FONT_KEY_GOTHIC_24_BOLD, GTextAlignmentLeft);
 	text_layer_set_text(mensaje_layer, "Introduce parada y linea");
   layer_add_child(window_get_root_layer(window), (Layer*) mensaje_layer);
  

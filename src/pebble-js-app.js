@@ -46,24 +46,27 @@ function BuscaParadas(parada,linea) {
     //console.log("URL: http://www.auesa.es/paradas_qr/"+parada+".php?vari="+linea);
 
     var response = HTTPGET("http://www.auesa.es/paradas_qr/"+parada+".php?vari="+linea);
-  
+    //console.log(response);
     // CODIGOS DE ERROR
     // 97 = Error 404. La web no existe. Posiblemente por que la parada seleccionada no existe.
     // 98 = Existe la línea y la parada pero no hay datos (posiblemente no circulen autobueses a esas horas.
     // 99 = No pasa esa linea por la parada seleccionada.
     if (response==1)
       {
-        console.log("Como no existe la web mando codigo 97");
+        //console.log("Como no existe la web mando codigo 97");
         t1 = "97";
         t2 = "97";
       }
     else
       {
        var json = JSON.parse(response);
-       if (json.status==1) 
+       //console.log(json);
+       if (json.status=="0") 
        {
+         //console.log("El estado es 1");
          if (json.GetPasoParadaResult)
          {
+           //console.log("Existe GetPasoParadaResult");
            t1 = json.GetPasoParadaResult.PasoParada.e1.minutos;
            t2 = json.GetPasoParadaResult.PasoParada.e2.minutos;
            //console.log("Hay datos");
