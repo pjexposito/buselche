@@ -47,7 +47,7 @@
     "shortName": "Bus Elche",
     "uuid": "383f627a-1b76-47c2-a3d1-e63e305dc8cb",
     "versionCode": 1,
-    "versionLabel": "1.2",
+    "versionLabel": "1.3",
     "watchapp": {
         "watchface": false
     }

@@ -1,5 +1,6 @@
 #include <pebble.h>
-#include "bus.h"  
+#include "bus.h"
+#include "busdb.h"
   
   
 Window* window;
@@ -129,6 +130,11 @@ void envia_peticion()
       send_int(numero_parada,lineas[letra]);
 }
 
+void pinta_nombredeparada()
+  {
+    text_layer_set_text(mensaje_layer, array_nombre_parada[(numero1*100)+(numero2*10)+numero3]);
+}
+
 void up_click_handler(ClickRecognizerRef recognizer, void *context) 
 {
    int tamano_array_lineas = sizeof(lineas)/sizeof(lineas[0]);
@@ -149,6 +155,7 @@ void up_click_handler(ClickRecognizerRef recognizer, void *context)
       if (letra==tamano_array_lineas) letra=0;
       break;     
     }
+  pinta_nombredeparada();
   pinta_datos();
 }
 
@@ -172,6 +179,7 @@ void down_click_handler(ClickRecognizerRef recognizer, void *context)
       letra==0 ? letra=tamano_array_lineas-1 : letra--;
       break;     
     }
+  pinta_nombredeparada();
   pinta_datos();
 }
 
@@ -196,6 +204,7 @@ void select_click_handler(ClickRecognizerRef recognizer, void *context)
       envia_peticion();
       break;     
     }
+  
   layer_mark_dirty(marcador);
 }
 

@@ -1,6 +1,7 @@
 #include "pebble.h"
 #include "bus.h"
- 
+#include "busdb.h"
+
   
 #define NUM_MENU_SECTIONS 2
 #define NUM_FIRST_MENU_ITEMS 1
@@ -28,6 +29,16 @@ struct texto_paradas {
     char linea[20]; 
     };
 
+
+int devuelve_valor(int key)
+  {
+    int unsigned valor = persist_exists(key) ? persist_read_int(key) : NUM_DEFAULT;
+    int unsigned v1 = valor/10000;
+    int unsigned v2 = (valor % 10000) /1000;
+    int unsigned v3 = (valor % 1000) /100;
+    return (v1*100)+(v2*10)+v3;
+}
+
 struct texto_paradas texto_favoritos_separado(int key)
   {
     struct texto_paradas item;
@@ -45,8 +56,9 @@ struct texto_paradas texto_favoritos_separado(int key)
     strcat(item.parada,buffer1);
     strcat(item.parada, buffer2);
     strcat(item.parada, buffer3);
-    strcpy(item.linea, "Linea: ");
-    strcat(item.linea, lineas_bus[v4]);
+    strcat(item.parada, " ");
+    strcat(item.parada, lineas_bus[v4]);
+    //strcpy(item.linea, "Linea: ");
 
     return item;
 }
@@ -122,23 +134,24 @@ static void menu_draw_row_callback(GContext* ctx, const Layer *cell_layer, MenuI
         case 0:
           //menu_cell_title_draw(ctx, cell_layer, texto_favoritos(FAV1_PKEY));
           datos = texto_favoritos_separado(FAV1_PKEY);
-          menu_cell_basic_draw(ctx, cell_layer, datos.parada, datos.linea, NULL);
+          //menu_cell_basic_draw(ctx, cell_layer, datos.parada, datos.linea, NULL);
+          menu_cell_basic_draw(ctx, cell_layer, datos.parada, array_nombre_parada[devuelve_valor(FAV1_PKEY)], NULL);
           break; 
         case 1:
           datos = texto_favoritos_separado(FAV2_PKEY);
-          menu_cell_basic_draw(ctx, cell_layer, datos.parada, datos.linea, NULL);
+          menu_cell_basic_draw(ctx, cell_layer, datos.parada, array_nombre_parada[devuelve_valor(FAV2_PKEY)], NULL);
           break;
         case 2:
           datos = texto_favoritos_separado(FAV3_PKEY);
-          menu_cell_basic_draw(ctx, cell_layer, datos.parada, datos.linea, NULL);
+          menu_cell_basic_draw(ctx, cell_layer, datos.parada, array_nombre_parada[devuelve_valor(FAV3_PKEY)], NULL);
           break;
         case 3:
           datos = texto_favoritos_separado(FAV4_PKEY);
-          menu_cell_basic_draw(ctx, cell_layer, datos.parada, datos.linea, NULL);
+          menu_cell_basic_draw(ctx, cell_layer, datos.parada, array_nombre_parada[devuelve_valor(FAV4_PKEY)], NULL);
           break;  
         case 4:
           datos = texto_favoritos_separado(FAV5_PKEY);
-          menu_cell_basic_draw(ctx, cell_layer, datos.parada, datos.linea, NULL);
+          menu_cell_basic_draw(ctx, cell_layer, datos.parada, array_nombre_parada[devuelve_valor(FAV5_PKEY)], NULL);
           break;
       }
   }
