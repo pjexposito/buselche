@@ -1,4 +1,6 @@
-#include <busdb.h>
+#include "busdb.h"
+
+int total_paradas = 322;  
   
 char *array_nombre_parada[] = {
 "Sin datos",
@@ -316,6 +318,11 @@ char *array_nombre_parada[] = {
 "Avinguda Llibertat, 34",
 "L Algeps - Avg. Llibertat",
 "Bigastro 2 Ida",
-"Bigastro 3 Ida"
+"Bigastro 3 Ida",
+"Tren: Oficina De Turismo",
+"Tren: Parque Municipal",
+"Tren: Calahorra",
+"Tren: Museo Del Palmeral",
+"Tren: Huerto Ripoll",
+"Sin datos"
 };
-

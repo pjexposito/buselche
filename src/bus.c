@@ -132,7 +132,12 @@ void envia_peticion()
 
 void pinta_nombredeparada()
   {
-    text_layer_set_text(mensaje_layer, array_nombre_parada[(numero1*100)+(numero2*10)+numero3]);
+  int temp_numero_parada = (numero1*100)+(numero2*10)+numero3;
+  if (temp_numero_parada < total_paradas)
+    text_layer_set_text(mensaje_layer, array_nombre_parada[temp_numero_parada]);
+  else
+    text_layer_set_text(mensaje_layer, "Parada inexistente");
+
 }
 
 void up_click_handler(ClickRecognizerRef recognizer, void *context) 
@@ -211,11 +216,34 @@ void select_click_handler(ClickRecognizerRef recognizer, void *context)
 
 void select_long_click_handler(ClickRecognizerRef recognizer, void *context)
 {
+  char username[50];
   persist_write_int(FAV5_PKEY, persist_read_int(FAV4_PKEY));
+  persist_read_string(FAV4_PKEY_cadena, username, sizeof(username));
+  persist_write_string(FAV5_PKEY_cadena, username);
+  memset(&username[0], 0, sizeof(username));
+
+  
   persist_write_int(FAV4_PKEY, persist_read_int(FAV3_PKEY));
+  persist_read_string(FAV3_PKEY_cadena, username, sizeof(username));
+  persist_write_string(FAV4_PKEY_cadena, username);
+  memset(&username[0], 0, sizeof(username));
+
+  
   persist_write_int(FAV3_PKEY, persist_read_int(FAV2_PKEY));
+  persist_read_string(FAV2_PKEY_cadena, username, sizeof(username));
+  persist_write_string(FAV3_PKEY_cadena, username);
+  memset(&username[0], 0, sizeof(username));
+
+  
   persist_write_int(FAV2_PKEY, persist_read_int(FAV1_PKEY));
+  persist_read_string(FAV1_PKEY_cadena, username, sizeof(username));
+  persist_write_string(FAV2_PKEY_cadena, username);
+  memset(&username[0], 0, sizeof(username));
+
+  
   persist_write_int(FAV1_PKEY, (numero1*10000) + (numero2*1000) + (numero3*100) + letra);
+  persist_write_string(FAV1_PKEY_cadena, array_nombre_parada[(numero1*100)+(numero2*10)+numero3]);
+
   text_layer_set_text(mensaje_layer, "Parada agregada a favoritos.");
 
 }
