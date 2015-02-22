@@ -1,6 +1,8 @@
 #include <pebble.h>
 #include "bus.h"
 #include "busdb.h"
+#include "lineas_db.h"
+  
   
   
 Window* window;
@@ -348,7 +350,8 @@ void window_load(Window *window)
   linea_layer = init_text_layer(GRect(43, 37, 30, 30), GColorBlack, GColorClear, FONT_KEY_GOTHIC_28_BOLD, GTextAlignmentCenter);
 	layer_add_child(window_get_root_layer(window), (Layer*) linea_layer);
   
-  pinta_datos();  
+  pinta_datos(); 
+  pinta_nombredeparada();
   if (posicion==3)
     {
     envia_peticion();
