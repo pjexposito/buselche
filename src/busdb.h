@@ -1,2 +1,2 @@
-char *array_nombre_parada[322];
+char *array_nombre_parada[338];
 int total_paradas;

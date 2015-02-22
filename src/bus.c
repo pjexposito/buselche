@@ -19,12 +19,12 @@ GBitmap *arriba_bitmap, *abajo_bitmap, *pulsar_bitmap, *play_bitmap, *buscar_bit
 
 
 // Lineas
-const char *lineas[]= {"A","B","C","D","E","F","G","H","I","J","K","L","R","R2"};
+char lineas[]= {"ABCDEFGHIJKLR2"};
 
 
 // Resto de variables
 char texto[1024], tiempo1[1024], tiempo2[1024];
-static int numero1, numero2, numero3, letra, posicion=0, cargando=0;
+static int numero1, numero2, numero3, letra, posicion=0, cargando=0, tamano_array_lineas;
 
 // Asignación para recibir datos
 enum {
@@ -35,7 +35,7 @@ enum {
 void pinta_datos(void)
 {
 
-  static char buffer1[]="12",buffer2[]="12",buffer3[]="12";
+  static char buffer1[]="12",buffer2[]="12",buffer3[]="12",buffer4[]="12";
 
   snprintf(buffer1, sizeof(buffer1), "%d", numero1);
 	text_layer_set_text(dig1_layer, buffer1);
@@ -43,7 +43,9 @@ void pinta_datos(void)
 	text_layer_set_text(dig2_layer, buffer2);
   snprintf(buffer3, sizeof(buffer3), "%d", numero3);
 	text_layer_set_text(dig3_layer, buffer3);
-  text_layer_set_text(linea_layer, lineas[letra]); 
+  snprintf(buffer4, sizeof(buffer4), "%c", lineas[letra]);
+
+  text_layer_set_text(linea_layer, buffer4); 
 
   
 }
@@ -122,14 +124,15 @@ void send_int(int16_t parada, const char *linea)
 
 void envia_peticion()
   {
-  
+      static char buffer[]="12";
       text_layer_set_text(mensaje_layer, "Cargando...");
       cargando = 1;
       int numero_parada=(numero1*100)+(numero2*10)+numero3;
       //Borro la variable de tiempo 1 y 2 antes de volver a pedir datos.
       memset(&tiempo1[0], 0, sizeof(tiempo1));
       memset(&tiempo2[0], 0, sizeof(tiempo2));
-      send_int(numero_parada,lineas[letra]);
+      snprintf(buffer, sizeof(buffer), "%c", lineas[letra]);
+      send_int(numero_parada,buffer);
 }
 
 void pinta_nombredeparada()
@@ -142,9 +145,22 @@ void pinta_nombredeparada()
 
 }
 
+void carga_lineas()
+  {
+  int t_parada = (numero1*100)+(numero2*10)+numero3;
+  memset(&lineas[0], 0, sizeof(lineas));
+  snprintf(lineas, sizeof(lineas), "%s",array_lineasxparada[t_parada]);
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "Se carga: %s, de la posicion %i", array_lineasxparada[t_parada], t_parada);
+  letra=0;
+  for (int t=0;lineas[t] != '0';t++)
+    tamano_array_lineas = t;
+  pinta_datos();
+
+  }
+  
+
 void up_click_handler(ClickRecognizerRef recognizer, void *context) 
 {
-   int tamano_array_lineas = sizeof(lineas)/sizeof(lineas[0]);
    if (cargando==1) return;
    switch(posicion) 
     {
@@ -159,7 +175,7 @@ void up_click_handler(ClickRecognizerRef recognizer, void *context)
       break;
 	  case 3:      
       letra++;
-      if (letra==tamano_array_lineas) letra=0;
+      if (letra==tamano_array_lineas+1) letra=0;
       break;     
     }
   pinta_nombredeparada();
@@ -168,7 +184,6 @@ void up_click_handler(ClickRecognizerRef recognizer, void *context)
 
 void down_click_handler(ClickRecognizerRef recognizer, void *context) 
 {
-  int tamano_array_lineas = sizeof(lineas)/sizeof(lineas[0]);
   if (cargando==1) return;
 
   switch(posicion) 
@@ -183,7 +198,9 @@ void down_click_handler(ClickRecognizerRef recognizer, void *context)
       numero3==0 ? numero3=9 : numero3--;
       break;
 	  case 3:
-      letra==0 ? letra=tamano_array_lineas-1 : letra--;
+      if (lineas[letra] == '0') letra=0;
+
+      letra==0 ? letra=tamano_array_lineas : letra--;
       break;     
     }
   pinta_nombredeparada();
@@ -192,6 +209,9 @@ void down_click_handler(ClickRecognizerRef recognizer, void *context)
 
 void select_click_handler(ClickRecognizerRef recognizer, void *context)
 {
+
+
+  letra = 0;
   if (cargando==1)
     return;
   
@@ -204,8 +224,16 @@ void select_click_handler(ClickRecognizerRef recognizer, void *context)
       posicion=2;
 			break;
 		case 2:
+      if ((numero1*100)+(numero2*10)+numero3 > total_paradas)
+      {
+        posicion =0;
+      }
+    else
+      {
       posicion=3;
       action_bar_layer_set_icon(action_bar, BUTTON_ID_SELECT, buscar_bitmap);
+      carga_lineas();
+      }
       break;    
 		case 3:
       envia_peticion();

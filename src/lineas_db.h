@@ -1,1 +1,1 @@
-char *array_lineasxparada[322];
+char *array_lineasxparada[338];
