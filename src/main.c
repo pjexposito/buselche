@@ -12,8 +12,8 @@ static MenuLayer *menu_layer;
 
 
 // Lineas
-const char *lineas_bus[]= {"A","B","C","D","E","F","G","H","I","J","K","L","R","R2"};
-static char buffer1[]="12",buffer2[]="12",buffer3[]="12", texto[1024], fav1_cadena[50], fav2_cadena[50], fav3_cadena[50], fav4_cadena[50], fav5_cadena[50];
+char lineas_bus[]= {"ABCDEFGHIJKLR2"};
+static char buffer1[]="12",buffer2[]="12",buffer3[]="12",buffer4[]="12", texto[1024], fav1_cadena[50], fav2_cadena[50], fav3_cadena[50], fav4_cadena[50], fav5_cadena[50];
 
 
 struct datos_entrada { 
@@ -47,16 +47,29 @@ struct texto_paradas texto_favoritos_separado(int key)
     int unsigned v2 = (valor % 10000) /1000;
     int unsigned v3 = (valor % 1000) /100;
     int unsigned v4 = (valor % 100);
-  
+    int t_parada = (v1*100)+(v2*10)+v3;
+    char t_linea = devuelve_linea(t_parada, v4);
     snprintf(buffer1, sizeof(buffer1), "%d", v1);
     snprintf(buffer2, sizeof(buffer2), "%d", v2);
     snprintf(buffer3, sizeof(buffer3), "%d", v3);
+    if (t_linea=='1')
+      snprintf(buffer4, sizeof(buffer4), "%s", "R");
+    else if (t_linea=='2')
+      snprintf(buffer4, sizeof(buffer4), "%s", "R2");
+    else if (t_linea=='3')
+      snprintf(buffer4, sizeof(buffer4), "%s", "R");
+    else
+      snprintf(buffer4, sizeof(buffer4), "%c", t_linea);
+
+
+  
+  
     strcpy(item.parada, "Parada: ");
     strcat(item.parada,buffer1);
     strcat(item.parada, buffer2);
     strcat(item.parada, buffer3);
     strcat(item.parada, " ");
-    strcat(item.parada, lineas_bus[v4]);
+    strcat(item.parada, buffer4);
     //strcpy(item.linea, "Linea: ");
 
     return item;
@@ -73,20 +86,28 @@ struct datos_entrada carga_datos(int key)
   return b;
 }
 
+/*
 const char *texto_favoritos(int KEY)
   {
     struct datos_entrada valores;
     valores = carga_datos(KEY);
-    snprintf(buffer1, sizeof(buffer1), "%d", valores.v1);
+    int t_parada = (valores.v1*100)+(valores.v2*10)+valores.v3;
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "Se devuelve el valor de parada %d",t_parada);
+
+    //snprintf(buffer1, sizeof(buffer1), "%d", valores.v1);
+    snprintf(buffer1, sizeof(buffer1), "%d", t_parada);
+
     snprintf(buffer2, sizeof(buffer2), "%d", valores.v2);
     snprintf(buffer3, sizeof(buffer3), "%d", valores.v3);
+    snprintf(buffer4, sizeof(buffer4), "%c", devuelve_linea(t_parada));
+
     strcpy(texto,buffer1);
-    strcat(texto, buffer2);
-    strcat(texto, buffer3);
-    strcat(texto, lineas_bus[valores.v4]);
+    //strcat(texto, buffer2);
+    //strcat(texto, buffer3);
+    strcat(texto, buffer4);
     return texto;
   }
-
+*/
 
 static uint16_t menu_get_num_sections_callback(MenuLayer *menu_layer, void *data) {
   return NUM_MENU_SECTIONS;

@@ -43,9 +43,17 @@ void pinta_datos(void)
 	text_layer_set_text(dig2_layer, buffer2);
   snprintf(buffer3, sizeof(buffer3), "%d", numero3);
 	text_layer_set_text(dig3_layer, buffer3);
-  snprintf(buffer4, sizeof(buffer4), "%c", lineas[letra]);
+  
+  if (lineas[letra] == '1')
+     snprintf(buffer4, sizeof(buffer4), "%s", "R");
+  else  if (lineas[letra] == '2')
+      snprintf(buffer4, sizeof(buffer4), "%s", "R2");
+  else  if (lineas[letra] == '3')
+      snprintf(buffer4, sizeof(buffer4), "%s", "R");
+  else  
+      snprintf(buffer4, sizeof(buffer4), "%c", lineas[letra]);
 
-  text_layer_set_text(linea_layer, buffer4); 
+    text_layer_set_text(linea_layer, buffer4); 
 
   
 }
@@ -145,19 +153,25 @@ void pinta_nombredeparada()
 
 }
 
-void carga_lineas()
+void carga_lineas(int fav)
   {
   int t_parada = (numero1*100)+(numero2*10)+numero3;
   memset(&lineas[0], 0, sizeof(lineas));
   snprintf(lineas, sizeof(lineas), "%s",array_lineasxparada[t_parada]);
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "Se carga: %s, de la posicion %i", array_lineasxparada[t_parada], t_parada);
-  letra=0;
+  //APP_LOG(APP_LOG_LEVEL_DEBUG, "Se carga: %s, de la posicion %i", array_lineasxparada[t_parada], t_parada);
+  if (fav!=1)
+    letra=0;
   for (int t=0;lineas[t] != '0';t++)
     tamano_array_lineas = t;
   pinta_datos();
 
   }
   
+char devuelve_linea(int parada, int linea)
+  {
+
+  return array_lineasxparada[parada][linea];
+}
 
 void up_click_handler(ClickRecognizerRef recognizer, void *context) 
 {
@@ -209,8 +223,6 @@ void down_click_handler(ClickRecognizerRef recognizer, void *context)
 
 void select_click_handler(ClickRecognizerRef recognizer, void *context)
 {
-
-
   letra = 0;
   if (cargando==1)
     return;
@@ -230,9 +242,16 @@ void select_click_handler(ClickRecognizerRef recognizer, void *context)
       }
     else
       {
-      posicion=3;
-      action_bar_layer_set_icon(action_bar, BUTTON_ID_SELECT, buscar_bitmap);
-      carga_lineas();
+      carga_lineas(0);
+      if (lineas[0] == '-')
+        {
+        posicion =0;
+        }
+      else
+        {
+         posicion=3;
+         action_bar_layer_set_icon(action_bar, BUTTON_ID_SELECT, buscar_bitmap);
+        }
       }
       break;    
 		case 3:
@@ -378,7 +397,7 @@ void window_load(Window *window)
   linea_layer = init_text_layer(GRect(43, 37, 30, 30), GColorBlack, GColorClear, FONT_KEY_GOTHIC_28_BOLD, GTextAlignmentCenter);
 	layer_add_child(window_get_root_layer(window), (Layer*) linea_layer);
   
-  pinta_datos(); 
+  carga_lineas(1); 
   pinta_nombredeparada();
   if (posicion==3)
     {
