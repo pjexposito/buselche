@@ -1,3 +1,7 @@
+// BUGS conocidos pendientes
+// Al volver atrás tras añadir a favoritos, el nombre de la parada no cambia
+// Sería interesante que el nombre de parada se cargara automáticamente y no se guardara como cadena
+
 #include <pebble.h>
 #include "bus.h"
 #include "busdb.h"
@@ -24,7 +28,7 @@ char lineas[]= {"ABCDEFGHIJKLR2"};
 
 // Resto de variables
 char texto[1024], tiempo1[1024], tiempo2[1024];
-static int numero1, numero2, numero3, letra, posicion=0, cargando=0, tamano_array_lineas;
+static int numero1, numero2, numero3, letra, posicion=0, cargando=0, tamano_array_lineas, pre_parada=0;
 
 // Asignación para recibir datos
 enum {
@@ -79,6 +83,8 @@ void process_tuple(Tuple *t)
 
 static void in_received_handler(DictionaryIterator *iter, void *context) 
 {
+  //APP_LOG(APP_LOG_LEVEL_DEBUG, "Acabo de recibir datos (pebble).");
+
 	memset(&tiempo1[0], 0, sizeof(tiempo1));
   memset(&tiempo2[0], 0, sizeof(tiempo2));
 
@@ -139,7 +145,16 @@ void envia_peticion()
       //Borro la variable de tiempo 1 y 2 antes de volver a pedir datos.
       memset(&tiempo1[0], 0, sizeof(tiempo1));
       memset(&tiempo2[0], 0, sizeof(tiempo2));
-      snprintf(buffer, sizeof(buffer), "%c", lineas[letra]);
+      if (lineas[letra] == '1')
+          snprintf(buffer, sizeof(buffer), "%s", "R");
+      else  if (lineas[letra] == '2')
+          snprintf(buffer, sizeof(buffer), "%s", "R2");
+      else  if (lineas[letra] == '3')
+          snprintf(buffer, sizeof(buffer), "%s", "R");
+      else  
+          snprintf(buffer, sizeof(buffer), "%c", lineas[letra]);
+      //APP_LOG(APP_LOG_LEVEL_DEBUG, "Parada: %d y buffer: %s. Lineas es %s y letra es %d.", numero_parada, buffer, lineas, letra);
+
       send_int(numero_parada,buffer);
 }
 
@@ -153,14 +168,12 @@ void pinta_nombredeparada()
 
 }
 
-void carga_lineas(int fav)
+void carga_lineas()
   {
   int t_parada = (numero1*100)+(numero2*10)+numero3;
   memset(&lineas[0], 0, sizeof(lineas));
   snprintf(lineas, sizeof(lineas), "%s",array_lineasxparada[t_parada]);
   //APP_LOG(APP_LOG_LEVEL_DEBUG, "Se carga: %s, de la posicion %i", array_lineasxparada[t_parada], t_parada);
-  if (fav!=1)
-    letra=0;
   for (int t=0;lineas[t] != '0';t++)
     tamano_array_lineas = t;
   pinta_datos();
@@ -223,7 +236,6 @@ void down_click_handler(ClickRecognizerRef recognizer, void *context)
 
 void select_click_handler(ClickRecognizerRef recognizer, void *context)
 {
-  letra = 0;
   if (cargando==1)
     return;
   
@@ -242,13 +254,17 @@ void select_click_handler(ClickRecognizerRef recognizer, void *context)
       }
     else
       {
-      carga_lineas(0);
+      carga_lineas();
       if (lineas[0] == '-')
         {
         posicion =0;
         }
       else
         {
+          APP_LOG(APP_LOG_LEVEL_DEBUG, "Numero: %d, Preparada: %d", (numero1*100)+(numero2*10)+numero3, pre_parada);
+
+         if ((numero1*100)+(numero2*10)+numero3!=pre_parada) letra = 0;
+         pre_parada = (numero1*100)+(numero2*10)+numero3;
          posicion=3;
          action_bar_layer_set_icon(action_bar, BUTTON_ID_SELECT, buscar_bitmap);
         }
@@ -258,7 +274,7 @@ void select_click_handler(ClickRecognizerRef recognizer, void *context)
       envia_peticion();
       break;     
     }
-  
+
   layer_mark_dirty(marcador);
 }
 
@@ -397,7 +413,7 @@ void window_load(Window *window)
   linea_layer = init_text_layer(GRect(43, 37, 30, 30), GColorBlack, GColorClear, FONT_KEY_GOTHIC_28_BOLD, GTextAlignmentCenter);
 	layer_add_child(window_get_root_layer(window), (Layer*) linea_layer);
   
-  carga_lineas(1); 
+  carga_lineas(); 
   pinta_nombredeparada();
   if (posicion==3)
     {

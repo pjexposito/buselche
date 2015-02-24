@@ -51,6 +51,7 @@ function BuscaParadas(parada,linea) {
     // 97 = Error 404. La web no existe. Posiblemente por que la parada seleccionada no existe.
     // 98 = Existe la línea y la parada pero no hay datos (posiblemente no circulen autobueses a esas horas.
     // 99 = No pasa esa linea por la parada seleccionada.
+    //console.log("Tengo datos: "  + response);
     if (response==1)
       {
         //console.log("Como no existe la web mando codigo 97");
@@ -67,9 +68,19 @@ function BuscaParadas(parada,linea) {
          if (json.GetPasoParadaResult)
          {
            //console.log("Existe GetPasoParadaResult");
-           t1 = json.GetPasoParadaResult.PasoParada.e1.minutos;
-           t2 = json.GetPasoParadaResult.PasoParada.e2.minutos;
-           //console.log("Hay datos");
+           // Hago esto por que de vez en cuando el servidor devuelve más de un valor repetido (¿bug?)
+           // De esta forma, si existe el bug, se pasa por encima cogiendo sólo el primer valor
+           if (json.GetPasoParadaResult.PasoParada[0])
+             {
+             t1 = json.GetPasoParadaResult.PasoParada[0].e1.minutos;
+             t2 = json.GetPasoParadaResult.PasoParada[0].e2.minutos;
+             }
+           else
+             {
+             t1 = json.GetPasoParadaResult.PasoParada.e1.minutos;
+             t2 = json.GetPasoParadaResult.PasoParada.e2.minutos;              
+             }
+               //console.log("Hay datos");
          }
          else
          {
@@ -93,6 +104,8 @@ function BuscaParadas(parada,linea) {
   dict = {"KEY_T1" : t1, "KEY_T2": t2};
 
 	//Mando los datos de dirección al reloj
+  //console.log("Voy a mandar datos: "+t1 +", "+t2);
+
 	Pebble.sendAppMessage(dict);
 }
 
