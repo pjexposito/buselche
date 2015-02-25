@@ -1,3 +1,7 @@
+// POR HACER
+// Meter las funciones de BD en un único archivo. 
+// Quitarle roña al código
+
 
 #include <pebble.h>
 #include "bus.h"
@@ -250,7 +254,7 @@ void select_click_handler(ClickRecognizerRef recognizer, void *context)
       posicion=2;
 			break;
 		case 2:
-      if (((numero1*100)+(numero2*10)+numero3 > total_paradas) || ((numero1*100)+(numero2*10)+numero3 == 0))
+      if (((numero1*100)+(numero2*10)+numero3+2 > total_paradas) || ((numero1*100)+(numero2*10)+numero3 == 0))
       {
         posicion =0;
       }
@@ -263,7 +267,7 @@ void select_click_handler(ClickRecognizerRef recognizer, void *context)
         }
       else
         {
-          APP_LOG(APP_LOG_LEVEL_DEBUG, "Numero: %d, Preparada: %d", (numero1*100)+(numero2*10)+numero3, pre_parada);
+          //APP_LOG(APP_LOG_LEVEL_DEBUG, "Numero: %d, Preparada: %d", (numero1*100)+(numero2*10)+numero3, pre_parada);
 
          if ((numero1*100)+(numero2*10)+numero3!=pre_parada) letra = 0;
          pre_parada = (numero1*100)+(numero2*10)+numero3;
@@ -405,7 +409,7 @@ void window_load(Window *window)
 void window_unload(Window *window)
 {
   int t_parada = (numero1*10000) + (numero2*1000) + (numero3*100);
-  if (t_parada>total_paradas)
+  if ((t_parada/100)>(total_paradas-1))
     t_parada=100;
   persist_write_int(PRINCIPAL_PKEY, t_parada + letra);
     //APP_LOG(APP_LOG_LEVEL_DEBUG, "Se guarda: %d + %d", (numero1*10000) + (numero2*1000) + (numero3*100), letra);
