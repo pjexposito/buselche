@@ -1,5 +1,6 @@
 #include "pebble.h"
 #include "bus.h"
+#include "busdb.h"
 
   
 #define NUM_MENU_SECTIONS 2
