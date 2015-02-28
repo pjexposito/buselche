@@ -17,5 +17,3 @@
  
   
 void carga_paradas(int n1, int n2, int n3, int l, int fav);
-char devuelve_linea(int parada, int linea);
-char * devuelve_nombre(int parada);

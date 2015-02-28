@@ -44,6 +44,7 @@
             }
         ]
     },
+    "sdkVersion": "2",
     "shortName": "Bus Elche",
     "uuid": "383f627a-1b76-47c2-a3d1-e63e305dc8cb",
     "versionCode": 1,
