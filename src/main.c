@@ -29,13 +29,6 @@ struct texto_paradas {
     int parada; 
     };
 
-struct table_row { int int_var; char *char_array1; char *char_array2; };
- 
-struct table_row a_table[] = {
-  {1, "1,1", "1,2"},
-  {2, "2,1", "2,2"},
-  {0, NULL, NULL}
-};
 
 int devuelve_valor(int key)
   {
@@ -161,6 +154,10 @@ static void menu_draw_row_callback(GContext* ctx, const Layer *cell_layer, MenuI
     case 1:
       switch (cell_index->row) {
         case 0:
+          //menu_cell_title_draw(ctx, cell_layer, texto_favoritos(FAV1_PKEY));
+          //menu_cell_basic_draw(ctx, cell_layer, datos.parada, datos.linea, NULL);
+          //menu_cell_basic_draw(ctx, cell_layer, datos.parada, array_nombre_parada[devuelve_valor(FAV1_PKEY)], NULL);
+
           datos = texto_favoritos_separado(FAV1_PKEY);
           menu_cell_basic_draw(ctx, cell_layer, datos.texto, devuelve_nombre_parada(datos.parada)/*fav1_cadena*/, NULL);
           break; 
@@ -244,8 +241,7 @@ static void window_load(Window *window) {
   
   menu_layer_set_click_config_onto_window(menu_layer, window);
   layer_add_child(window_layer, menu_layer_get_layer(menu_layer));
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "Para 1, se devuelve %s y %s. Para 2, %s, %s",a_table[0].char_array1, a_table[0].char_array2,a_table[1].char_array1, a_table[1].char_array2);
-
+  
 }
 
 static void window_unload(Window *window) {

@@ -1,19 +1,7 @@
 // POR HACER
 // Meter las funciones de BD en un único archivo. 
 // Quitarle roña al código
-/*
-Reemplazar las matrices de nombres y paradas por algo así:
-struct table_row { int int_var; char *char_array1; char *char_array2; };
- 
-struct table_row a_table[] = {
-   1, "row 1, column 2", "row 1, column 3",
-   2, "row 2, column 2", "row 2, column 3"
-   0, NULL, NULL
-};
-*/
 
-// Esto irá en el archivo de funciones, por lo que no será necesario compartir la base de datos con el
-// resto de archivos .c
 
 #include <pebble.h>
 #include "bus.h"
@@ -34,6 +22,10 @@ TextLayer *textolinea_layer, *textoparada_layer, *nombreparada_layer,*dig1_layer
 GBitmap *arriba_bitmap, *abajo_bitmap, *pulsar_bitmap, *play_bitmap, *buscar_bitmap;
 
 
+// Lineas
+char lineas[]= {"ABCDEFGHIJKLR2"};
+
+
 // Resto de variables
 char texto[1024], tiempo1[1024], tiempo2[1024];
 static int numero1, numero2, numero3, letra, posicion=0, cargando=0, tamano_array_lineas, pre_parada=0;
@@ -43,15 +35,6 @@ enum {
 	KEY_T1 = 0,
 	KEY_T2 = 1
 };
-
-int numero_parada()
-  {
-  // Aquí se debe comprabar si la parada existe
-  int valor=(numero1*100)+(numero2*10)+numero3;
-  if (valor>total_paradas-1)
-    valor = 1;
-  return valor;
-}
 
 void pinta_datos(void)
 {
@@ -65,14 +48,14 @@ void pinta_datos(void)
   snprintf(buffer3, sizeof(buffer3), "%d", numero3);
 	text_layer_set_text(dig3_layer, buffer3);
   
-  if (devuelve_lineasxparada(numero_parada())[letra] == '1')
+  if (lineas[letra] == '1')
      snprintf(buffer4, sizeof(buffer4), "%s", "R");
-  else  if (devuelve_lineasxparada(numero_parada())[letra] == '2')
+  else  if (lineas[letra] == '2')
       snprintf(buffer4, sizeof(buffer4), "%s", "R2");
-  else  if (devuelve_lineasxparada(numero_parada())[letra] == '3')
+  else  if (lineas[letra] == '3')
       snprintf(buffer4, sizeof(buffer4), "%s", "R");
   else  
-      snprintf(buffer4, sizeof(buffer4), "%c", devuelve_lineasxparada(numero_parada())[letra]);
+      snprintf(buffer4, sizeof(buffer4), "%c", lineas[letra]);
 
     text_layer_set_text(linea_layer, buffer4); 
 
@@ -121,7 +104,7 @@ static void in_received_handler(DictionaryIterator *iter, void *context)
     // 98 = Existe la línea y la parada pero no hay datos (posiblemente no circulen autobueses a esas horas).
     // 99 = No pasa esa linea por la parada seleccionada.
     if (strcmp(tiempo1,"99")==0)
-      text_layer_set_text(mensaje_layer, "Sin linea en la parada seleccionada.");
+      text_layer_set_text(mensaje_layer, "Servicio no disponible.");
     else if (strcmp(tiempo1,"98")==0)
       text_layer_set_text(mensaje_layer, "Parada sin autobuses disponibles.");
     else if (strcmp(tiempo1,"97")==0)
@@ -158,20 +141,21 @@ void envia_peticion()
       static char buffer[]="12";
       text_layer_set_text(mensaje_layer, "Cargando...");
       cargando = 1;
+      int numero_parada=(numero1*100)+(numero2*10)+numero3;
       //Borro la variable de tiempo 1 y 2 antes de volver a pedir datos.
       memset(&tiempo1[0], 0, sizeof(tiempo1));
       memset(&tiempo2[0], 0, sizeof(tiempo2));
-      if (devuelve_lineasxparada(numero_parada())[letra] == '1')
+      if (lineas[letra] == '1')
           snprintf(buffer, sizeof(buffer), "%s", "R");
-      else  if (devuelve_lineasxparada(numero_parada())[letra] == '2')
+      else  if (lineas[letra] == '2')
           snprintf(buffer, sizeof(buffer), "%s", "R2");
-      else  if (devuelve_lineasxparada(numero_parada())[letra] == '3')
+      else  if (lineas[letra] == '3')
           snprintf(buffer, sizeof(buffer), "%s", "R");
       else  
-          snprintf(buffer, sizeof(buffer), "%c", devuelve_lineasxparada(numero_parada())[letra]);
+          snprintf(buffer, sizeof(buffer), "%c", lineas[letra]);
       //APP_LOG(APP_LOG_LEVEL_DEBUG, "Parada: %d y buffer: %s. Lineas es %s y letra es %d.", numero_parada, buffer, lineas, letra);
 
-      send_int(numero_parada(),buffer);
+      send_int(numero_parada,buffer);
 }
 
 void pinta_nombredeparada()
@@ -186,16 +170,16 @@ void pinta_nombredeparada()
 
 void carga_lineas()
   {
+  int t_parada = (numero1*100)+(numero2*10)+numero3;
+  memset(&lineas[0], 0, sizeof(lineas));
+  snprintf(lineas, sizeof(lineas), "%s",devuelve_lineasxparada(t_parada));
   //APP_LOG(APP_LOG_LEVEL_DEBUG, "Se carga: %s, de la posicion %i", array_lineasxparada[t_parada], t_parada);
-  for (int t=0;devuelve_lineasxparada(numero_parada())[t] != '0';t++)
+  for (int t=0;lineas[t] != '0';t++)
     tamano_array_lineas = t;
   pinta_datos();
 
   }
   
-
-
-
 
 void up_click_handler(ClickRecognizerRef recognizer, void *context) 
 {
@@ -236,7 +220,7 @@ void down_click_handler(ClickRecognizerRef recognizer, void *context)
       numero3==0 ? numero3=9 : numero3--;
       break;
 	  case 3:
-      if (devuelve_lineasxparada(numero_parada())[letra] == '0') letra=0;
+      if (lineas[letra] == '0') letra=0;
 
       letra==0 ? letra=tamano_array_lineas : letra--;
       break;     
@@ -266,7 +250,7 @@ void select_click_handler(ClickRecognizerRef recognizer, void *context)
     else
       {
       carga_lineas();
-      if (devuelve_lineasxparada(numero_parada())[0] == '-')
+      if (lineas[0] == '-')
         {
         posicion =0;
         }

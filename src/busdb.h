@@ -5,8 +5,9 @@
   
 extern int total_paradas;
 extern char * devuelve_nombre_parada(int parada);
-extern char devuelve_linea(int parada, int linea);
 extern char * devuelve_lineasxparada(int parada);
+extern char devuelve_linea(int parada, int linea);
+
 
 
 #endif

@@ -12,24 +12,8 @@
     "resources": {
         "media": [
             {
-                "file": "images/icono.png",
-                "menuIcon": true,
-                "name": "IMAGE_ICONO_PRINCIPAL",
-                "type": "png"
-            },
-            {
-                "file": "images/buscar.png",
-                "name": "ICONO_BUSCAR",
-                "type": "png"
-            },
-            {
-                "file": "images/play.png",
-                "name": "ICONO_PLAY",
-                "type": "png"
-            },
-            {
-                "file": "images/pulsar.png",
-                "name": "ICON_PULSAR",
+                "file": "images/arriba.png",
+                "name": "ICONO_ARRIBA",
                 "type": "png"
             },
             {
@@ -38,8 +22,24 @@
                 "type": "png"
             },
             {
-                "file": "images/arriba.png",
-                "name": "ICONO_ARRIBA",
+                "file": "images/pulsar.png",
+                "name": "ICON_PULSAR",
+                "type": "png"
+            },
+            {
+                "file": "images/play.png",
+                "name": "ICONO_PLAY",
+                "type": "png"
+            },
+            {
+                "file": "images/buscar.png",
+                "name": "ICONO_BUSCAR",
+                "type": "png"
+            },
+            {
+                "file": "images/icono.png",
+                "menuIcon": true,
+                "name": "IMAGE_ICONO_PRINCIPAL",
                 "type": "png"
             }
         ]
@@ -48,7 +48,7 @@
     "shortName": "Bus Elche",
     "uuid": "383f627a-1b76-47c2-a3d1-e63e305dc8cb",
     "versionCode": 1,
-    "versionLabel": "1.3",
+    "versionLabel": "1.4",
     "watchapp": {
         "watchface": false
     }
