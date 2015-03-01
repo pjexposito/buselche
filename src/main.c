@@ -49,18 +49,21 @@ struct texto_paradas texto_favoritos_separado(int key)
     int unsigned v3 = (valor % 1000) /100;
     int unsigned v4 = (valor % 100);
     int t_parada = (v1*100)+(v2*10)+v3;
-    char t_linea = devuelve_linea(t_parada, v4);
+    //char t_linea = devuelve_linea(t_parada, v4);
     snprintf(buffer1, sizeof(buffer1), "%d", v1);
     snprintf(buffer2, sizeof(buffer2), "%d", v2);
     snprintf(buffer3, sizeof(buffer3), "%d", v3);
-    if (t_linea=='1')
+   
+  /*
+  if (t_linea=='1')
       snprintf(buffer4, sizeof(buffer4), "%s", "R");
     else if (t_linea=='2')
       snprintf(buffer4, sizeof(buffer4), "%s", "R2");
     else if (t_linea=='3')
       snprintf(buffer4, sizeof(buffer4), "%s", "R");
     else
-      snprintf(buffer4, sizeof(buffer4), "%c", t_linea);
+      */
+      snprintf(buffer4, sizeof(buffer4), "%s", devuelve_linea(t_parada, v4));
 
 
   

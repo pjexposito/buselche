@@ -1,4 +1,5 @@
 #include "busdb.h"
+#include "pebble.h"
 
 char *array_nombre_parada[] = {
 "Sin datos",
@@ -1017,9 +1018,19 @@ char * devuelve_lineasxparada(int parada)
   return array_lineasxparada[parada];
 }
 
-char devuelve_linea(int parada, int linea)
+char * devuelve_linea(int parada, int linea)
   {
+  static char buffer[]="12";
   // Si meto aquí el struct peta. Comprobar por qué
   // También se cuelga al cargar. Comprobar.
-  return array_lineasxparada[parada][linea];
+  if (array_lineasxparada[parada][linea] == '1')
+          snprintf(buffer, sizeof(buffer), "%s", "R");
+  else  if (array_lineasxparada[parada][linea] == '2')
+          snprintf(buffer, sizeof(buffer), "%s", "R2");
+  else  if (array_lineasxparada[parada][linea] == '3')
+          snprintf(buffer, sizeof(buffer), "%s", "R");
+  else
+          snprintf(buffer, sizeof(buffer), "%c", array_lineasxparada[parada][linea]);
+
+  return buffer;
 }

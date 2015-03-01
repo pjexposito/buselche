@@ -36,10 +36,17 @@ enum {
 	KEY_T2 = 1
 };
 
+int numero_parada()
+  {
+  // Aquí se debe comprabar si la parada existe
+  int valor=(numero1*100)+(numero2*10)+numero3;
+  return valor;
+}
+
 void pinta_datos(void)
 {
 
-  static char buffer1[]="12",buffer2[]="12",buffer3[]="12",buffer4[]="12";
+  static char buffer1[]="12",buffer2[]="12",buffer3[]="12";
 
   snprintf(buffer1, sizeof(buffer1), "%d", numero1);
 	text_layer_set_text(dig1_layer, buffer1);
@@ -48,16 +55,9 @@ void pinta_datos(void)
   snprintf(buffer3, sizeof(buffer3), "%d", numero3);
 	text_layer_set_text(dig3_layer, buffer3);
   
-  if (lineas[letra] == '1')
-     snprintf(buffer4, sizeof(buffer4), "%s", "R");
-  else  if (lineas[letra] == '2')
-      snprintf(buffer4, sizeof(buffer4), "%s", "R2");
-  else  if (lineas[letra] == '3')
-      snprintf(buffer4, sizeof(buffer4), "%s", "R");
-  else  
-      snprintf(buffer4, sizeof(buffer4), "%c", lineas[letra]);
-
-    text_layer_set_text(linea_layer, buffer4); 
+  
+  if (numero_parada() < total_paradas) 
+    text_layer_set_text(linea_layer, devuelve_linea(numero_parada(), letra)); 
 
   
 }
@@ -138,31 +138,21 @@ void send_int(int16_t parada, const char *linea)
 
 void envia_peticion()
   {
-      static char buffer[]="12";
       text_layer_set_text(mensaje_layer, "Cargando...");
       cargando = 1;
-      int numero_parada=(numero1*100)+(numero2*10)+numero3;
       //Borro la variable de tiempo 1 y 2 antes de volver a pedir datos.
       memset(&tiempo1[0], 0, sizeof(tiempo1));
       memset(&tiempo2[0], 0, sizeof(tiempo2));
-      if (lineas[letra] == '1')
-          snprintf(buffer, sizeof(buffer), "%s", "R");
-      else  if (lineas[letra] == '2')
-          snprintf(buffer, sizeof(buffer), "%s", "R2");
-      else  if (lineas[letra] == '3')
-          snprintf(buffer, sizeof(buffer), "%s", "R");
-      else  
-          snprintf(buffer, sizeof(buffer), "%c", lineas[letra]);
-      //APP_LOG(APP_LOG_LEVEL_DEBUG, "Parada: %d y buffer: %s. Lineas es %s y letra es %d.", numero_parada, buffer, lineas, letra);
 
-      send_int(numero_parada,buffer);
+      send_int(numero_parada(),devuelve_linea(numero_parada(), letra));
 }
 
 void pinta_nombredeparada()
   {
-  int temp_numero_parada = (numero1*100)+(numero2*10)+numero3;
-  if (temp_numero_parada < total_paradas)
-    text_layer_set_text(mensaje_layer, devuelve_nombre_parada(temp_numero_parada));
+   //APP_LOG(APP_LOG_LEVEL_DEBUG, "Parada: %d y total es %d.", numero_parada(), total_paradas);
+
+  if (numero_parada() < total_paradas) 
+    text_layer_set_text(mensaje_layer, devuelve_nombre_parada(numero_parada()));
   else
     text_layer_set_text(mensaje_layer, "Parada inexistente");
 
@@ -170,9 +160,8 @@ void pinta_nombredeparada()
 
 void carga_lineas()
   {
-  int t_parada = (numero1*100)+(numero2*10)+numero3;
   memset(&lineas[0], 0, sizeof(lineas));
-  snprintf(lineas, sizeof(lineas), "%s",devuelve_lineasxparada(t_parada));
+  snprintf(lineas, sizeof(lineas), "%s",devuelve_lineasxparada(numero_parada()));
   //APP_LOG(APP_LOG_LEVEL_DEBUG, "Se carga: %s, de la posicion %i", array_lineasxparada[t_parada], t_parada);
   for (int t=0;lineas[t] != '0';t++)
     tamano_array_lineas = t;
@@ -243,7 +232,7 @@ void select_click_handler(ClickRecognizerRef recognizer, void *context)
       posicion=2;
 			break;
 		case 2:
-      if (((numero1*100)+(numero2*10)+numero3+2 > total_paradas) || ((numero1*100)+(numero2*10)+numero3 == 0))
+      if ((numero_parada()+2 > total_paradas) || (numero_parada() == 0))
       {
         posicion =0;
       }
@@ -258,8 +247,8 @@ void select_click_handler(ClickRecognizerRef recognizer, void *context)
         {
           //APP_LOG(APP_LOG_LEVEL_DEBUG, "Numero: %d, Preparada: %d", (numero1*100)+(numero2*10)+numero3, pre_parada);
 
-         if ((numero1*100)+(numero2*10)+numero3!=pre_parada) letra = 0;
-         pre_parada = (numero1*100)+(numero2*10)+numero3;
+         if (numero_parada()!=pre_parada) letra = 0;
+         pre_parada = numero_parada();
          posicion=3;
          action_bar_layer_set_icon(action_bar, BUTTON_ID_SELECT, buscar_bitmap);
         }
