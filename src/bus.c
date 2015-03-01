@@ -22,9 +22,6 @@ TextLayer *textolinea_layer, *textoparada_layer, *nombreparada_layer,*dig1_layer
 GBitmap *arriba_bitmap, *abajo_bitmap, *pulsar_bitmap, *play_bitmap, *buscar_bitmap;
 
 
-// Lineas
-char lineas[]= {"ABCDEFGHIJKLR2"};
-
 
 // Resto de variables
 char texto[1024], tiempo1[1024], tiempo2[1024];
@@ -160,10 +157,7 @@ void pinta_nombredeparada()
 
 void carga_lineas()
   {
-  memset(&lineas[0], 0, sizeof(lineas));
-  snprintf(lineas, sizeof(lineas), "%s",devuelve_lineasxparada(numero_parada()));
-  //APP_LOG(APP_LOG_LEVEL_DEBUG, "Se carga: %s, de la posicion %i", array_lineasxparada[t_parada], t_parada);
-  for (int t=0;lineas[t] != '0';t++)
+  for (int t=0;strcmp(devuelve_linea(numero_parada(), t),"0")!=0;t++)
     tamano_array_lineas = t;
   pinta_datos();
 
@@ -209,7 +203,7 @@ void down_click_handler(ClickRecognizerRef recognizer, void *context)
       numero3==0 ? numero3=9 : numero3--;
       break;
 	  case 3:
-      if (lineas[letra] == '0') letra=0;
+      if (strcmp(devuelve_linea(numero_parada(), letra),"0")==0) letra=0;
 
       letra==0 ? letra=tamano_array_lineas : letra--;
       break;     
@@ -239,9 +233,9 @@ void select_click_handler(ClickRecognizerRef recognizer, void *context)
     else
       {
       carga_lineas();
-      if (lineas[0] == '-')
+      if (strcmp(devuelve_linea(numero_parada(), 0),"-")==0)
         {
-        posicion =0;
+        posicion = 0;
         }
       else
         {
