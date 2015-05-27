@@ -314,7 +314,7 @@ void select_long_click_handler(ClickRecognizerRef recognizer, void *context)
   persist_write_int(FAV4_PKEY, persist_read_int(FAV3_PKEY));
   persist_write_int(FAV3_PKEY, persist_read_int(FAV2_PKEY));
   persist_write_int(FAV2_PKEY, persist_read_int(FAV1_PKEY));
-  persist_write_int(FAV1_PKEY, (numero1*10000) + (numero2*1000) + (numero3*100));
+  persist_write_int(FAV1_PKEY, (numero1*100) + (numero2*10) + (numero3));
 
   text_layer_set_text(mensaje_layer, "Parada agregada a favoritos.");
 
@@ -427,7 +427,7 @@ void window_load(Window *window)
 
 void window_unload(Window *window)
 {
-  int t_parada = (numero1*10000) + (numero2*1000) + (numero3*100);
+  int t_parada = (numero1*100) + (numero2*10) + (numero3);
   if ((t_parada/100)>(total_paradas-1))
     t_parada=100;
   persist_write_int(PRINCIPAL_PKEY, t_parada);
@@ -453,12 +453,12 @@ void window_unload(Window *window)
 }
 
 /* Initialize the main app elements */
-void carga_paradas(int n1, int n2, int n3, int fav, int buscar)
+void carga_paradas(int n1, int fav, int buscar)
 {
   i_buscar = 0;
-  numero1 = n1;
-  numero2 = n2;
-  numero3 = n3;
+  numero1= n1/100;
+  numero2= (n1 % 100) /10;
+  numero3=n1 % 10;
 	window = window_create();
 	WindowHandlers handlers = {
 		.load = window_load,

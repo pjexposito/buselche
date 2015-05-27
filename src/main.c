@@ -13,66 +13,23 @@ static MenuLayer *menu_layer;
 
 
 // Lineas
-char lineas_bus[]= {"ABCDEFGHIJKLR2"};
-static char buffer1[]="12",buffer2[]="12",buffer3[]="12";
-
-
-struct datos_entrada { 
-    unsigned int v1; 
-    unsigned int v2; 
-    unsigned int v3; 
-    };
-
-struct texto_paradas { 
-    char texto[20]; 
-    int parada; 
-    };
+static char buffer[]="Parada: XXX";
 
 
 int devuelve_valor(int key)
   {
     int unsigned valor = persist_exists(key) ? persist_read_int(key) : NUM_DEFAULT;
-    int unsigned v1 = valor/10000;
-    int unsigned v2 = (valor % 10000) /1000;
-    int unsigned v3 = (valor % 1000) /100;
-    return (v1*100)+(v2*10)+v3;
+    return valor;
 }
 
-struct texto_paradas texto_favoritos_separado(int key)
+char * texto_favoritos(int key)
   {
-    struct texto_paradas item;
-
     int unsigned valor = persist_exists(key) ? persist_read_int(key) : NUM_DEFAULT;
-    int unsigned v1 = valor/10000;
-    int unsigned v2 = (valor % 10000) /1000;
-    int unsigned v3 = (valor % 1000) /100;
-    int t_parada = (v1*100)+(v2*10)+v3;
     //char t_linea = devuelve_linea(t_parada, v4);
-    snprintf(buffer1, sizeof(buffer1), "%d", v1);
-    snprintf(buffer2, sizeof(buffer2), "%d", v2);
-    snprintf(buffer3, sizeof(buffer3), "%d", v3);
-
-  
-  
-    strcpy(item.texto, "Parada: ");
-    strcat(item.texto,buffer1);
-    strcat(item.texto, buffer2);
-    strcat(item.texto, buffer3);
-
-    item.parada = t_parada;
-
-    return item;
+    snprintf(buffer, sizeof(buffer), "Parada: %d", valor);
+    return buffer;
 }
 
-struct datos_entrada carga_datos(int key)
-{
-  struct datos_entrada b;        
-  int unsigned valor = persist_exists(key) ? persist_read_int(key) : NUM_DEFAULT;
-  b.v1 = valor/10000;
-  b.v2 = (valor % 10000) /1000;
-  b.v3 = (valor % 1000) /100;
-  return b;
-}
 
 
 static uint16_t menu_get_num_sections_callback(MenuLayer *menu_layer, void *data) {
@@ -106,8 +63,6 @@ static void menu_draw_header_callback(GContext* ctx, const Layer *cell_layer, ui
 }
 
 static void menu_draw_row_callback(GContext* ctx, const Layer *cell_layer, MenuIndex *cell_index, void *data) {
-  struct texto_paradas datos;
-
   switch (cell_index->section) {
     case 0:
       switch (cell_index->row) {
@@ -122,24 +77,19 @@ static void menu_draw_row_callback(GContext* ctx, const Layer *cell_layer, MenuI
     case 1:
       switch (cell_index->row) {
         case 0:
-          datos = texto_favoritos_separado(FAV1_PKEY);
-          menu_cell_basic_draw(ctx, cell_layer, datos.texto, devuelve_datos_parada(datos.parada,0)/*fav1_cadena*/, NULL);
+          menu_cell_basic_draw(ctx, cell_layer, texto_favoritos(FAV1_PKEY), devuelve_datos_parada(devuelve_valor(FAV1_PKEY),0)/*fav1_cadena*/, NULL);
           break; 
         case 1:
-          datos = texto_favoritos_separado(FAV2_PKEY);
-          menu_cell_basic_draw(ctx, cell_layer, datos.texto, devuelve_datos_parada(datos.parada,0)/*fav1_cadena*/, NULL);
+          menu_cell_basic_draw(ctx, cell_layer, texto_favoritos(FAV2_PKEY), devuelve_datos_parada(devuelve_valor(FAV2_PKEY),0)/*fav1_cadena*/, NULL);
           break;
         case 2:
-          datos = texto_favoritos_separado(FAV3_PKEY);
-          menu_cell_basic_draw(ctx, cell_layer, datos.texto, devuelve_datos_parada(datos.parada,0)/*fav1_cadena*/, NULL);
+          menu_cell_basic_draw(ctx, cell_layer, texto_favoritos(FAV3_PKEY), devuelve_datos_parada(devuelve_valor(FAV3_PKEY),0)/*fav1_cadena*/, NULL);
           break;
         case 3:
-          datos = texto_favoritos_separado(FAV4_PKEY);
-          menu_cell_basic_draw(ctx, cell_layer, datos.texto, devuelve_datos_parada(datos.parada,0)/*fav1_cadena*/, NULL);
+          menu_cell_basic_draw(ctx, cell_layer, texto_favoritos(FAV4_PKEY), devuelve_datos_parada(devuelve_valor(FAV4_PKEY),0)/*fav1_cadena*/, NULL);
           break;  
         case 4:
-          datos = texto_favoritos_separado(FAV5_PKEY);
-          menu_cell_basic_draw(ctx, cell_layer, datos.texto, devuelve_datos_parada(datos.parada,0)/*fav1_cadena*/, NULL);
+          menu_cell_basic_draw(ctx, cell_layer, texto_favoritos(FAV5_PKEY), devuelve_datos_parada(devuelve_valor(FAV5_PKEY),0)/*fav1_cadena*/, NULL);
           break;
       }
   }
@@ -147,17 +97,17 @@ static void menu_draw_row_callback(GContext* ctx, const Layer *cell_layer, MenuI
   
   
 void menu_select_callback(MenuLayer *menu_layer, MenuIndex *cell_index, void *data) {
-  struct datos_entrada valores;
+  int numero_parada;
   switch (cell_index->section) {
     case 0:
       switch (cell_index->row) {
       case 0:
-        valores = carga_datos(PRINCIPAL_PKEY);
-        carga_paradas(valores.v1,valores.v2,valores.v3, 0, 0);
+        numero_parada = devuelve_valor(PRINCIPAL_PKEY);
+        carga_paradas(numero_parada, 0, 0);
         break;
       case 1:
-        valores = carga_datos(PRINCIPAL_PKEY);
-        carga_paradas(valores.v1,valores.v2,valores.v3, 0, 1);
+        numero_parada = devuelve_valor(PRINCIPAL_PKEY);
+        carga_paradas(numero_parada, 0, 1);
         break;
       }
       break;
@@ -165,24 +115,24 @@ void menu_select_callback(MenuLayer *menu_layer, MenuIndex *cell_index, void *da
     case 1:
       switch (cell_index->row) {
       case 0:
-         valores = carga_datos(FAV1_PKEY);
-         carga_paradas(valores.v1,valores.v2,valores.v3, 1, 0);
+         numero_parada = devuelve_valor(FAV1_PKEY);
+         carga_paradas(numero_parada, 1, 0);
          break;
       case 1:
-         valores = carga_datos(FAV2_PKEY);
-         carga_paradas(valores.v1,valores.v2,valores.v3, 1, 0);
+         numero_parada = devuelve_valor(FAV2_PKEY);
+         carga_paradas(numero_parada, 1, 0);
          break;
       case 2:
-         valores = carga_datos(FAV3_PKEY);
-         carga_paradas(valores.v1,valores.v2,valores.v3, 1, 0);
+         numero_parada = devuelve_valor(FAV3_PKEY);
+         carga_paradas(numero_parada, 1, 0);
          break;
       case 3:
-         valores = carga_datos(FAV4_PKEY);
-         carga_paradas(valores.v1,valores.v2,valores.v3, 1, 0);
+         numero_parada = devuelve_valor(FAV4_PKEY);
+         carga_paradas(numero_parada, 1, 0);
          break;
       case 4:
-         valores = carga_datos(FAV5_PKEY);
-         carga_paradas(valores.v1,valores.v2,valores.v3, 1, 0);
+         numero_parada = devuelve_valor(FAV5_PKEY);
+         carga_paradas(numero_parada, 1, 0);
          layer_mark_dirty(menu_layer_get_layer(menu_layer));
          break;
       }
