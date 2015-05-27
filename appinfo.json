@@ -1,10 +1,11 @@
 {
     "appKeys": {
-        "KEY_T1": 0,
-        "KEY_T2": 1
+        "KEY_L1": 1,
+        "KEY_PARADA": 0,
+        "KEY_TIPO": 2
     },
     "capabilities": [
-        ""
+        "location"
     ],
     "companyName": "Pedro",
     "longName": "Bus Elche",
@@ -12,29 +13,34 @@
     "resources": {
         "media": [
             {
-                "file": "images/arriba.png",
-                "name": "ICONO_ARRIBA",
-                "type": "png"
-            },
-            {
-                "file": "images/abajo.png",
-                "name": "ICONO_ABAJO",
-                "type": "png"
+                "file": "data/struct.bin",
+                "name": "RECURSO_BUS",
+                "type": "raw"
             },
             {
                 "file": "images/pulsar.png",
                 "name": "ICON_PULSAR",
-                "type": "png"
+                "type": "png-trans"
             },
             {
                 "file": "images/play.png",
                 "name": "ICONO_PLAY",
-                "type": "png"
+                "type": "png-trans"
             },
             {
                 "file": "images/buscar.png",
                 "name": "ICONO_BUSCAR",
-                "type": "png"
+                "type": "png-trans"
+            },
+            {
+                "file": "images/abajo.png",
+                "name": "ICONO_ABAJO",
+                "type": "png-trans"
+            },
+            {
+                "file": "images/arriba.png",
+                "name": "ICONO_ARRIBA",
+                "type": "png-trans"
             },
             {
                 "file": "images/icono.png",
@@ -44,10 +50,13 @@
             }
         ]
     },
-    "sdkVersion": "2",
+    "sdkVersion": "3",
     "shortName": "Bus Elche",
+    "targetPlatforms": [
+        "aplite",
+        "basalt"
+    ],
     "uuid": "383f627a-1b76-47c2-a3d1-e63e305dc8cb",
-    "versionCode": 1,
     "versionLabel": "1.4",
     "watchapp": {
         "watchface": false

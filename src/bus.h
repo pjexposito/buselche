@@ -16,4 +16,4 @@
 #define FAV5_PKEY_cadena 11 
  
   
-void carga_paradas(int n1, int n2, int n3, int l, int fav);
+void carga_paradas(int n1, int n2, int n3, int fav, int buscar);

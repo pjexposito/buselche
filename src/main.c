@@ -4,7 +4,7 @@
 
   
 #define NUM_MENU_SECTIONS 2
-#define NUM_FIRST_MENU_ITEMS 1
+#define NUM_FIRST_MENU_ITEMS 2
 #define NUM_SECOND_MENU_ITEMS 5
   
 static Window *window;
@@ -14,14 +14,13 @@ static MenuLayer *menu_layer;
 
 // Lineas
 char lineas_bus[]= {"ABCDEFGHIJKLR2"};
-static char buffer1[]="12",buffer2[]="12",buffer3[]="12",buffer4[]="12";
+static char buffer1[]="12",buffer2[]="12",buffer3[]="12";
 
 
 struct datos_entrada { 
     unsigned int v1; 
     unsigned int v2; 
     unsigned int v3; 
-    unsigned int v4; 
     };
 
 struct texto_paradas { 
@@ -47,24 +46,11 @@ struct texto_paradas texto_favoritos_separado(int key)
     int unsigned v1 = valor/10000;
     int unsigned v2 = (valor % 10000) /1000;
     int unsigned v3 = (valor % 1000) /100;
-    int unsigned v4 = (valor % 100);
     int t_parada = (v1*100)+(v2*10)+v3;
     //char t_linea = devuelve_linea(t_parada, v4);
     snprintf(buffer1, sizeof(buffer1), "%d", v1);
     snprintf(buffer2, sizeof(buffer2), "%d", v2);
     snprintf(buffer3, sizeof(buffer3), "%d", v3);
-   
-  /*
-  if (t_linea=='1')
-      snprintf(buffer4, sizeof(buffer4), "%s", "R");
-    else if (t_linea=='2')
-      snprintf(buffer4, sizeof(buffer4), "%s", "R2");
-    else if (t_linea=='3')
-      snprintf(buffer4, sizeof(buffer4), "%s", "R");
-    else
-      */
-      snprintf(buffer4, sizeof(buffer4), "%s", devuelve_linea(t_parada, v4));
-
 
   
   
@@ -72,8 +58,7 @@ struct texto_paradas texto_favoritos_separado(int key)
     strcat(item.texto,buffer1);
     strcat(item.texto, buffer2);
     strcat(item.texto, buffer3);
-    strcat(item.texto, " ");
-    strcat(item.texto, buffer4);
+
     item.parada = t_parada;
 
     return item;
@@ -86,32 +71,9 @@ struct datos_entrada carga_datos(int key)
   b.v1 = valor/10000;
   b.v2 = (valor % 10000) /1000;
   b.v3 = (valor % 1000) /100;
-  b.v4 = (valor % 100);
   return b;
 }
 
-/*
-const char *texto_favoritos(int KEY)
-  {
-    struct datos_entrada valores;
-    valores = carga_datos(KEY);
-    int t_parada = (valores.v1*100)+(valores.v2*10)+valores.v3;
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "Se devuelve el valor de parada %d",t_parada);
-
-    //snprintf(buffer1, sizeof(buffer1), "%d", valores.v1);
-    snprintf(buffer1, sizeof(buffer1), "%d", t_parada);
-
-    snprintf(buffer2, sizeof(buffer2), "%d", valores.v2);
-    snprintf(buffer3, sizeof(buffer3), "%d", valores.v3);
-    snprintf(buffer4, sizeof(buffer4), "%c", devuelve_linea(t_parada));
-
-    strcpy(texto,buffer1);
-    //strcat(texto, buffer2);
-    //strcat(texto, buffer3);
-    strcat(texto, buffer4);
-    return texto;
-  }
-*/
 
 static uint16_t menu_get_num_sections_callback(MenuLayer *menu_layer, void *data) {
   return NUM_MENU_SECTIONS;
@@ -152,33 +114,32 @@ static void menu_draw_row_callback(GContext* ctx, const Layer *cell_layer, MenuI
         case 0:
           menu_cell_basic_draw(ctx, cell_layer, "Nueva busqueda", "Pulsa para iniciar", NULL);
           break;
+        case 1:
+          menu_cell_basic_draw(ctx, cell_layer, "Buscar parada", "Pulsa para iniciar", NULL);
+          break;
       }
       break;
     case 1:
       switch (cell_index->row) {
         case 0:
-          //menu_cell_title_draw(ctx, cell_layer, texto_favoritos(FAV1_PKEY));
-          //menu_cell_basic_draw(ctx, cell_layer, datos.parada, datos.linea, NULL);
-          //menu_cell_basic_draw(ctx, cell_layer, datos.parada, array_nombre_parada[devuelve_valor(FAV1_PKEY)], NULL);
-
           datos = texto_favoritos_separado(FAV1_PKEY);
-          menu_cell_basic_draw(ctx, cell_layer, datos.texto, devuelve_nombre_parada(datos.parada)/*fav1_cadena*/, NULL);
+          menu_cell_basic_draw(ctx, cell_layer, datos.texto, devuelve_datos_parada(datos.parada,0)/*fav1_cadena*/, NULL);
           break; 
         case 1:
           datos = texto_favoritos_separado(FAV2_PKEY);
-          menu_cell_basic_draw(ctx, cell_layer, datos.texto, devuelve_nombre_parada(datos.parada)/*fav1_cadena*/, NULL);
+          menu_cell_basic_draw(ctx, cell_layer, datos.texto, devuelve_datos_parada(datos.parada,0)/*fav1_cadena*/, NULL);
           break;
         case 2:
           datos = texto_favoritos_separado(FAV3_PKEY);
-          menu_cell_basic_draw(ctx, cell_layer, datos.texto, devuelve_nombre_parada(datos.parada)/*fav1_cadena*/, NULL);
+          menu_cell_basic_draw(ctx, cell_layer, datos.texto, devuelve_datos_parada(datos.parada,0)/*fav1_cadena*/, NULL);
           break;
         case 3:
           datos = texto_favoritos_separado(FAV4_PKEY);
-          menu_cell_basic_draw(ctx, cell_layer, datos.texto, devuelve_nombre_parada(datos.parada)/*fav1_cadena*/, NULL);
+          menu_cell_basic_draw(ctx, cell_layer, datos.texto, devuelve_datos_parada(datos.parada,0)/*fav1_cadena*/, NULL);
           break;  
         case 4:
           datos = texto_favoritos_separado(FAV5_PKEY);
-          menu_cell_basic_draw(ctx, cell_layer, datos.texto, devuelve_nombre_parada(datos.parada)/*fav1_cadena*/, NULL);
+          menu_cell_basic_draw(ctx, cell_layer, datos.texto, devuelve_datos_parada(datos.parada,0)/*fav1_cadena*/, NULL);
           break;
       }
   }
@@ -192,7 +153,11 @@ void menu_select_callback(MenuLayer *menu_layer, MenuIndex *cell_index, void *da
       switch (cell_index->row) {
       case 0:
         valores = carga_datos(PRINCIPAL_PKEY);
-        carga_paradas(valores.v1,valores.v2,valores.v3,valores.v4, 0);
+        carga_paradas(valores.v1,valores.v2,valores.v3, 0, 0);
+        break;
+      case 1:
+        valores = carga_datos(PRINCIPAL_PKEY);
+        carga_paradas(valores.v1,valores.v2,valores.v3, 0, 1);
         break;
       }
       break;
@@ -201,23 +166,23 @@ void menu_select_callback(MenuLayer *menu_layer, MenuIndex *cell_index, void *da
       switch (cell_index->row) {
       case 0:
          valores = carga_datos(FAV1_PKEY);
-         carga_paradas(valores.v1,valores.v2,valores.v3,valores.v4, 1);
+         carga_paradas(valores.v1,valores.v2,valores.v3, 1, 0);
          break;
       case 1:
          valores = carga_datos(FAV2_PKEY);
-         carga_paradas(valores.v1,valores.v2,valores.v3,valores.v4, 1);
+         carga_paradas(valores.v1,valores.v2,valores.v3, 1, 0);
          break;
       case 2:
          valores = carga_datos(FAV3_PKEY);
-         carga_paradas(valores.v1,valores.v2,valores.v3,valores.v4, 1);
+         carga_paradas(valores.v1,valores.v2,valores.v3, 1, 0);
          break;
       case 3:
          valores = carga_datos(FAV4_PKEY);
-         carga_paradas(valores.v1,valores.v2,valores.v3,valores.v4, 1);
+         carga_paradas(valores.v1,valores.v2,valores.v3, 1, 0);
          break;
       case 4:
          valores = carga_datos(FAV5_PKEY);
-         carga_paradas(valores.v1,valores.v2,valores.v3,valores.v4, 1);
+         carga_paradas(valores.v1,valores.v2,valores.v3, 1, 0);
          layer_mark_dirty(menu_layer_get_layer(menu_layer));
          break;
       }
@@ -259,6 +224,9 @@ int main(void) {
     .load = window_load,
     .unload = window_unload,
   });
+  #ifdef PBL_SDK_2
+    window_set_fullscreen(window, true);
+  #endif
   window_stack_push(window, true);
   app_event_loop();
   window_destroy(window);
