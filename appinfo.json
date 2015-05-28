@@ -13,6 +13,17 @@
     "resources": {
         "media": [
             {
+                "file": "images/icono_inv.png",
+                "name": "IMAGEN_BUS_INV",
+                "type": "png"
+            },
+            {
+                "file": "images/icono.png",
+                "menuIcon": true,
+                "name": "IMAGE_ICONO_PRINCIPAL",
+                "type": "png"
+            },
+            {
                 "file": "data/struct.bin",
                 "name": "RECURSO_BUS",
                 "type": "raw"
@@ -41,12 +52,6 @@
                 "file": "images/arriba.png",
                 "name": "ICONO_ARRIBA",
                 "type": "png-trans"
-            },
-            {
-                "file": "images/icono.png",
-                "menuIcon": true,
-                "name": "IMAGE_ICONO_PRINCIPAL",
-                "type": "png"
             }
         ]
     },

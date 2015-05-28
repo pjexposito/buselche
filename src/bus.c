@@ -20,7 +20,7 @@ GBitmap *arriba_bitmap, *abajo_bitmap, *pulsar_bitmap, *play_bitmap, *buscar_bit
 
 // Resto de variables
 char texto[1024], tiempo1[100], tiempo2[100], tiempo_retorno[100];
-static int numero1, numero2, numero3, posicion=0, cargando=0, tamano_array_lineas, i_buscar;
+static int numero1, numero2, numero3, posicion=0, cargando=0, i_buscar;
 
 // Asignación para recibir datos
 enum {

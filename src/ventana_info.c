@@ -26,19 +26,15 @@ static GBitmap *s_icon_bitmap;
 static void window_load(Window *window) {
   Layer *window_layer = window_get_root_layer(window);
 
-  s_icon_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_ICONO_PRINCIPAL);
-  GRect bitmap_bounds = gbitmap_get_bounds(s_icon_bitmap);
-
-
+  s_icon_bitmap = gbitmap_create_with_resource(RESOURCE_ID_IMAGEN_BUS_INV);
   s_fondo_layer = bitmap_layer_create(GRect(0, 0, 144, 40));
   bitmap_layer_set_background_color(s_fondo_layer, COLOR_CABECERA);
   layer_add_child(window_layer, bitmap_layer_get_layer(s_fondo_layer));
 
 
 
-  s_scroll_layer = scroll_layer_create(GRect(10, 10 + bitmap_bounds.size.h + 5, 124, 168 - (10 + bitmap_bounds.size.h + 10)));
+  s_scroll_layer = scroll_layer_create(GRect(10, 10 + 28 + 5, 124, 168 - (10 + 28 + 10)));
   scroll_layer_set_click_config_onto_window(s_scroll_layer, window);
-  
   GRect bounds = layer_get_frame(window_layer);
   GRect max_text_bounds = GRect(0, 0, 120, 2000);
   s_label_layer = text_layer_create(max_text_bounds);
@@ -73,7 +69,7 @@ static void window_load(Window *window) {
   // FIN DE CAPA DE LA PARADA
   
   // CAPA DEL ICONO DEL BUS
-  s_icon_layer = bitmap_layer_create(GRect(5, 5, bitmap_bounds.size.w, bitmap_bounds.size.h));
+  s_icon_layer = bitmap_layer_create(GRect(5, 5, 28, 28));
   bitmap_layer_set_bitmap(s_icon_layer, s_icon_bitmap);
   layer_add_child(window_layer, bitmap_layer_get_layer(s_icon_layer));
   // FIN DE LA CAPA
