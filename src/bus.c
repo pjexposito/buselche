@@ -124,6 +124,7 @@ static void in_received_handler(DictionaryIterator *iter, void *context)
       //APP_LOG(APP_LOG_LEVEL_DEBUG, "V vale %i. Tiempos: %s %s", v, tiempo1, tiempo2);
 
       // CODIGOS DE ERROR
+      // 96 = No existe conexión a Internet.
       // 97 = Error 404. La web no existe. Posiblemente por que la parada seleccionada no existe.
       // 98 = Existe la línea y la parada pero no hay datos (posiblemente no circulen autobueses a esas horas).
       // 99 = No pasa esa linea por la parada seleccionada.
@@ -146,6 +147,10 @@ static void in_received_handler(DictionaryIterator *iter, void *context)
         strcat(texto, devuelve_linea(numero_parada(), v));
         strcat(texto, " no existe.\n");
         }
+      else if (strcmp(tiempo1,"96")==0)
+        {
+        strcat(texto,"Sin conexión a Internet.\n");
+        }      
       else if (strcmp(tiempo1,"SP")==0)
         {
         strcat(texto,"");

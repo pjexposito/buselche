@@ -443,9 +443,9 @@ function BuscaParadas_soap(lineas, lineas_utiles, parada,linea)
           }
         else
           {
-            // No hay forma de recoger los datos. Da error. El 98 hay que cambiarlos a otra cosa.
-            t1 = "77";
-            t2 = "77";
+            // No hay forma de recoger los datos. Sin conexión a Internet.
+            t1 = "96";
+            t2 = "96";
             comprueba_envio(lineas, lineas_utiles, t1+t2); 
           }
         }
