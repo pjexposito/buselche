@@ -1,6 +1,8 @@
 var dict;
 var t1 , t2, i;
 var numero_parada;
+var tiempos = "";
+var lineas_resueltas = 0;
 
 	var posiciones = [
 [38.266147,-0.701039,1],
@@ -373,6 +375,57 @@ function showPosition(position)
 		ParadaCercana(position.coords.latitude, position.coords.longitude);		
 	}    
 
+
+
+// WUHUUUUU, funciona! Se incrementa notablemente la velocidad del programa
+function BuscaParadas_soap(lineas,parada,linea) 
+  {
+    if (linea=="1") linea="R";
+    if (linea=="2") linea="R2";
+    if (linea=="3") linea="R";
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open('POST', 'http://www.isae-auesa.com:82/services/dinamica.asmx?op=GetPasoParada', true);
+
+    // build SOAP request
+    var sr =
+        '<?xml version="1.0" encoding="utf-8"?>' +
+        '<soapenv:Envelope ' + 
+        'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
+        'xmlns:api="http://127.0.0.1/Integrics/Enswitch/API" ' +
+        'xmlns:xsd="http://www.w3.org/2001/XMLSchema" ' +
+        'xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">' +
+        '<soapenv:Body>' +
+        '<GetPasoParada xmlns="http://tempuri.org/">' +
+        '<linea>' + linea + '</linea>' +
+        '<parada>' + parada + '</parada>' +
+        '<status>0</status>' +
+        '</GetPasoParada>' +
+        '</soapenv:Body>' +
+        '</soapenv:Envelope>';
+
+    xmlhttp.onreadystatechange = function () 
+      {
+      if (xmlhttp.readyState == 4) 
+        {
+        if (xmlhttp.status == 200) 
+          {
+          var t1 = xmlhttp.responseXML.getElementsByTagName("GetPasoParadaResult")[0].getElementsByTagName("PasoParada")[0].getElementsByTagName("e1")[0].getElementsByTagName("minutos")[0].textContent;
+          var t2 = xmlhttp.responseXML.getElementsByTagName("GetPasoParadaResult")[0].getElementsByTagName("PasoParada")[0].getElementsByTagName("e2")[0].getElementsByTagName("minutos")[0].textContent;
+          if (t1 > 0)
+            {
+              if (t1/10 < 1 && t1 > -1) t1 = "0"+t1;
+              if (t2/10 < 1 && t2 > -1) t2 = "0"+t2;
+              comprueba_envio(lineas,t1+t2);
+              return true;
+            }
+          }
+        }
+      };
+      // Send the POST request
+      xmlhttp.setRequestHeader('Content-Type', 'text/xml');
+      xmlhttp.send(sr);
+    }
+
 function ParadaCercana(lat, long)
 	{
     var global_menor;
@@ -402,53 +455,60 @@ function ParadaCercana(lat, long)
 
 
 function HTTPGET(url) {
+  console.log("Voy");
 	var req = new XMLHttpRequest();
-  req.open("GET", url, false);
-	req.send(null);
-  
-   //console.log(url + " es " + req.status);
+  // OJO, no va. Hay que cambiar el TRUE a FALSE
+  req.open("GET", url, true);
+  console.log(url);
+  req.timeout = 4000;
+  req.ontimeout = function () { console.log("Timed out!!!"); };
 
-  if (req.status == "404") 
-    {
-    //console.log("ME HA DADO ERROR 404");
-    return 1;
-  
+  req.onload = function(e) {
+    if (req.readyState == 4) {
+      if(req.status == 200) {
+        console.log("Código en función nueva: "+req.responseText);
+        var json = JSON.parse(req.responseText); 
+        console.log("El JSON "+json.GetPasoParadaResult.PasoParada.e1.minutos);
+        return req.responseText;
+      } else {
+        console.log("Error");
+      }
     }
-  else
-    {
-    //console.log("LA URL EXISTE. NO HAY ERROR");
-    return req.responseText;
-    }
+  };
+  req.send(null);
 }
 
 function ResuelveParada(parada, lineas) {
-    var tiempos = "";
+    console.log("Busco estas lineas: " + lineas );
     for (i = 0; i < lineas.length; i++) { 
       if (lineas[i] != "0") 
-        tiempos=tiempos+BuscaParadas(parada, lineas[i]);
-      else
         {
-      tiempos = tiempos+"SPSP";
+        BuscaParadas_soap(lineas,parada, lineas[i]);
         }
     }     
 
-	//Este es el diccionario con los datos que voy a mandar al reloj
-  
-  dict = {"KEY_TIPO": 0, "KEY_L1" : tiempos};
-  //console.log("Mensaje enviados:" + tiempos);
-
-	//Mando los datos de dirección al reloj
-  //console.log("Voy a mandar datos: "+t1 +", "+t2);
-
-	Pebble.sendAppMessage(dict);
 }
+
+function comprueba_envio(lineas,tiempos_enviados)
+  {
+    lineas_resueltas = lineas_resueltas + 1;
+    tiempos = tiempos+tiempos_enviados;
+    console.log("Llevo procesadas "+lineas_resueltas+". El total son :" +lineas.length + "\nTiempos vale: "+ tiempos);
+    if (lineas_resueltas == lineas.length)
+      {
+      dict = {"KEY_TIPO": 0, "KEY_L1" : tiempos};
+      console.log("Mensaje enviados al pebble:" + tiempos);
+      Pebble.sendAppMessage(dict);   
+      }
+  }
 
 function BuscaParadas(parada,linea) {
     if (linea=="1") linea="R";
     if (linea=="2") linea="R2";
     if (linea=="3") linea="R";
     var response = HTTPGET("http://www.auesa.es/paradas_qr/"+parada+".php?vari="+linea);
-    //console.log("Respuesta "+ response);
+    console.log("Se acaba de recibir");
+    console.log("Respuesta "+ response);
     // CODIGOS DE ERROR
     // 97 = Error 404. La web no existe. Posiblemente por que la parada seleccionada no existe.
     // 98 = Existe la línea y la parada pero no hay datos (posiblemente no circulen autobueses a esas horas.

@@ -158,7 +158,7 @@ static void in_received_handler(DictionaryIterator *iter, void *context)
         strcat(texto, devuelve_linea(numero_parada(), v));
         strcat(texto, ":\n");
         strcat(texto, tiempo1);
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "Tiempo2 vale: %s", tiempo2);
+        //APP_LOG(APP_LOG_LEVEL_DEBUG, "Tiempo2 vale: %s", tiempo2);
         if (atoi(tiempo2)!=-1)
           {
           strcat(texto, " y ");
