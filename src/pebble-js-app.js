@@ -1,8 +1,8 @@
 var dict;
-var t1 , t2, i;
+var i;
 var numero_parada;
-var tiempos = "";
-var lineas_resueltas = 0;
+var tiempos;
+var lineas_resueltas;
 
 	var posiciones = [
 [38.266147,-0.701039,1],
@@ -378,8 +378,10 @@ function showPosition(position)
 
 
 // WUHUUUUU, funciona! Se incrementa notablemente la velocidad del programa
-function BuscaParadas_soap(lineas,parada,linea) 
+function BuscaParadas_soap(lineas, lineas_utiles, parada,linea) 
   {
+    var t1, t2;
+
     if (linea=="1") linea="R";
     if (linea=="2") linea="R2";
     if (linea=="3") linea="R";
@@ -403,21 +405,48 @@ function BuscaParadas_soap(lineas,parada,linea)
         '</soapenv:Body>' +
         '</soapenv:Envelope>';
 
+    xmlhttp.timeout = 4000;
+    xmlhttp.ontimeout = function () 
+      { 
+        console.log("Timed out!!!"); 
+        t1 = "98";
+        t2 = "98";
+        comprueba_envio(lineas, lineas_utiles, t1+t2);
+      };
+    
     xmlhttp.onreadystatechange = function () 
       {
+      console.log("Comprobando linea "+ linea);
       if (xmlhttp.readyState == 4) 
         {
+        console.log("Acabo de pasar el readystate 4");
         if (xmlhttp.status == 200) 
           {
-          var t1 = xmlhttp.responseXML.getElementsByTagName("GetPasoParadaResult")[0].getElementsByTagName("PasoParada")[0].getElementsByTagName("e1")[0].getElementsByTagName("minutos")[0].textContent;
-          var t2 = xmlhttp.responseXML.getElementsByTagName("GetPasoParadaResult")[0].getElementsByTagName("PasoParada")[0].getElementsByTagName("e2")[0].getElementsByTagName("minutos")[0].textContent;
+          console.log("Ok, status 200");
+          if (xmlhttp.responseXML.getElementsByTagName("GetPasoParadaResult")[0].getElementsByTagName("PasoParada")[0])
+            {
+              t1 = xmlhttp.responseXML.getElementsByTagName("GetPasoParadaResult")[0].getElementsByTagName("PasoParada")[0].getElementsByTagName("e1")[0].getElementsByTagName("minutos")[0].textContent;
+              t2 = xmlhttp.responseXML.getElementsByTagName("GetPasoParadaResult")[0].getElementsByTagName("PasoParada")[0].getElementsByTagName("e2")[0].getElementsByTagName("minutos")[0].textContent;
+            }
+          else
+            {
+              t1 = "98";
+              t2 = "98";
+            }
           if (t1 > 0)
             {
               if (t1/10 < 1 && t1 > -1) t1 = "0"+t1;
               if (t2/10 < 1 && t2 > -1) t2 = "0"+t2;
-              comprueba_envio(lineas,t1+t2);
+              comprueba_envio(lineas, lineas_utiles, t1+t2);
               return true;
             }
+          }
+        else
+          {
+            // No hay forma de recoger los datos. Da error. El 98 hay que cambiarlos a otra cosa.
+            t1 = "77";
+            t2 = "77";
+            comprueba_envio(lineas, lineas_utiles, t1+t2); 
           }
         }
       };
@@ -454,119 +483,40 @@ function ParadaCercana(lat, long)
 	}
 
 
-function HTTPGET(url) {
-  console.log("Voy");
-	var req = new XMLHttpRequest();
-  // OJO, no va. Hay que cambiar el TRUE a FALSE
-  req.open("GET", url, true);
-  console.log(url);
-  req.timeout = 4000;
-  req.ontimeout = function () { console.log("Timed out!!!"); };
-
-  req.onload = function(e) {
-    if (req.readyState == 4) {
-      if(req.status == 200) {
-        console.log("Código en función nueva: "+req.responseText);
-        var json = JSON.parse(req.responseText); 
-        console.log("El JSON "+json.GetPasoParadaResult.PasoParada.e1.minutos);
-        return req.responseText;
-      } else {
-        console.log("Error");
-      }
-    }
-  };
-  req.send(null);
-}
-
 function ResuelveParada(parada, lineas) {
-    console.log("Busco estas lineas: " + lineas );
+    var lineas_utiles = 0;
+    for (i = 0; i < lineas.length; i++)
+      if (lineas[i] != "0") 
+        lineas_utiles = lineas_utiles + 1;
+  
+    console.log("Busco estas lineas: " + lineas + ". Hay " + lineas_utiles + " lineas útiles");
+  
     for (i = 0; i < lineas.length; i++) { 
       if (lineas[i] != "0") 
         {
-        BuscaParadas_soap(lineas,parada, lineas[i]);
+        BuscaParadas_soap(lineas, lineas_utiles, parada, lineas[i]);
         }
     }     
 
 }
 
-function comprueba_envio(lineas,tiempos_enviados)
+function comprueba_envio(lineas, lineas_utiles, tiempos_enviados)
   {
     lineas_resueltas = lineas_resueltas + 1;
     tiempos = tiempos+tiempos_enviados;
-    console.log("Llevo procesadas "+lineas_resueltas+". El total son :" +lineas.length + "\nTiempos vale: "+ tiempos);
-    if (lineas_resueltas == lineas.length)
+    console.log("Llevo procesadas "+lineas_resueltas+". El total son :" +lineas_utiles + "\nTiempos vale: "+ tiempos);
+    if (lineas_resueltas == lineas_utiles)
       {
+      for (i = lineas_utiles;i < lineas.length;i++)
+        {
+        console.log("X vale: "+i);
+        tiempos = tiempos + "SPSP";
+        }
       dict = {"KEY_TIPO": 0, "KEY_L1" : tiempos};
       console.log("Mensaje enviados al pebble:" + tiempos);
       Pebble.sendAppMessage(dict);   
       }
   }
-
-function BuscaParadas(parada,linea) {
-    if (linea=="1") linea="R";
-    if (linea=="2") linea="R2";
-    if (linea=="3") linea="R";
-    var response = HTTPGET("http://www.auesa.es/paradas_qr/"+parada+".php?vari="+linea);
-    console.log("Se acaba de recibir");
-    console.log("Respuesta "+ response);
-    // CODIGOS DE ERROR
-    // 97 = Error 404. La web no existe. Posiblemente por que la parada seleccionada no existe.
-    // 98 = Existe la línea y la parada pero no hay datos (posiblemente no circulen autobueses a esas horas.
-    // 99 = No pasa esa linea por la parada seleccionada.
-    //console.log("Tengo datos: "  + response);
-    if (response==1)
-      {
-        //console.log("Como no existe la web mando codigo 97");
-        t1 = "97";
-        t2 = "97";
-      }
-    else
-      {
-       var json = JSON.parse(response);
-       //console.log(json);
-       if (json.status=="0") 
-       {
-         //console.log("El estado es 1");
-         if (json.GetPasoParadaResult)
-         {
-           //console.log("Existe GetPasoParadaResult");
-           // Hago esto por que de vez en cuando el servidor devuelve más de un valor repetido (¿bug?)
-           // De esta forma, si existe el bug, se pasa por encima cogiendo sólo el primer valor
-           if (json.GetPasoParadaResult.PasoParada[0])
-             {
-             t1 = json.GetPasoParadaResult.PasoParada[0].e1.minutos;
-             t2 = json.GetPasoParadaResult.PasoParada[0].e2.minutos;
-             }
-           else
-             {
-             t1 = json.GetPasoParadaResult.PasoParada.e1.minutos;
-             t2 = json.GetPasoParadaResult.PasoParada.e2.minutos;              
-             }
-               //console.log("Hay datos");
-         }
-         else
-         {
-           t1 = "98";
-           t2 = "98";
-           //console.log("Existe la línea y la parada pero no hay datos (posiblemente no circulen autobueses a esas horas.");   
-         } 
-       }
-       else
-       {
-         //console.log("Esa linea no pasa por esa parada"); 
-         t1 = "99";
-         t2 = "99";
-       } 
-      }
-  if (t1/10 < 1 && t1 > -1) t1 = "0"+t1;
-	if (t2/10 < 1 && t2 > -1) t2 = "0"+t2;
-  //console.log("T1 y T2: " + t1 + " " + t2);
-
-  return t1+t2;
-}
-
-
-
 
 
 Pebble.addEventListener("ready",
@@ -590,6 +540,8 @@ Pebble.addEventListener("appmessage",
   {
     var parada=e.payload.KEY_PARADA;
     var lineas = e.payload.KEY_L1.split('');
+    lineas_resueltas = 0;
+    tiempos = "";
     //console.log("Mensaje recibido. Parada: " + parada + ". Lineas: " + lineas);
     ResuelveParada(parada, lineas);
   }
