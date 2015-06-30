@@ -2,6 +2,7 @@ var dict;
 var i;
 var numero_parada;
 var tiempos;
+var array_tiempos = [];
 var lineas_resueltas;
 
 	var posiciones = [
@@ -378,7 +379,7 @@ function showPosition(position)
 
 
 // WUHUUUUU, funciona! Se incrementa notablemente la velocidad del programa
-function BuscaParadas_soap(lineas, lineas_utiles, parada,linea) 
+function BuscaParadas_soap(lineas, lineas_utiles, parada,linea, posicion) 
   {
     var t1, t2;
 
@@ -411,18 +412,18 @@ function BuscaParadas_soap(lineas, lineas_utiles, parada,linea)
         console.log("Timed out!!!"); 
         t1 = "98";
         t2 = "98";
-        comprueba_envio(linea, lineas, lineas_utiles, t1+t2);
+        comprueba_envio(linea, lineas, lineas_utiles, t1+t2, posicion);
       };
     
     xmlhttp.onreadystatechange = function () 
       {
-      console.log("Comprobando linea "+ linea);
+      //console.log("Comprobando linea "+ linea);
       if (xmlhttp.readyState == 4) 
         {
-        console.log("Acabo de pasar el readystate 4");
+        //console.log("Acabo de pasar el readystate 4");
         if (xmlhttp.status == 200) 
           {
-          console.log("Ok, status 200");
+          //console.log("Ok, status 200");
           if (xmlhttp.responseXML.getElementsByTagName("GetPasoParadaResult")[0].getElementsByTagName("PasoParada")[0])
             {
               t1 = xmlhttp.responseXML.getElementsByTagName("GetPasoParadaResult")[0].getElementsByTagName("PasoParada")[0].getElementsByTagName("e1")[0].getElementsByTagName("minutos")[0].textContent;
@@ -443,7 +444,7 @@ function BuscaParadas_soap(lineas, lineas_utiles, parada,linea)
               t1 = "98";
               t2 = "98";
             }
-          comprueba_envio(linea, lineas, lineas_utiles, t1+t2);
+          comprueba_envio(linea, lineas, lineas_utiles, t1+t2, posicion);
           return true;
           }
         else
@@ -451,7 +452,7 @@ function BuscaParadas_soap(lineas, lineas_utiles, parada,linea)
             // No hay forma de recoger los datos. Sin conexión a Internet.
             t1 = "96";
             t2 = "96";
-            comprueba_envio(linea, lineas, lineas_utiles, t1+t2); 
+            comprueba_envio(linea, lineas, lineas_utiles, t1+t2, posicion); 
           }
         }
       };
@@ -494,31 +495,35 @@ function ResuelveParada(parada, lineas) {
       if (lineas[i] != "0") 
         lineas_utiles = lineas_utiles + 1;
   
-    console.log("Busco estas lineas: " + lineas + ". Hay " + lineas_utiles + " lineas útiles");
+    //console.log("Busco estas lineas: " + lineas + ". Hay " + lineas_utiles + " lineas útiles");
   
     for (i = 0; i < lineas.length; i++) { 
       if (lineas[i] != "0") 
         {
-        BuscaParadas_soap(lineas, lineas_utiles, parada, lineas[i]);
+        BuscaParadas_soap(lineas, lineas_utiles, parada, lineas[i], i);
         }
     }     
 
 }
 
-function comprueba_envio(linea, lineas, lineas_utiles, tiempos_enviados)
+function comprueba_envio(linea, lineas, lineas_utiles, tiempos_enviados, posicion)
   {
     lineas_resueltas = lineas_resueltas + 1;
-    tiempos = tiempos+tiempos_enviados;
+    array_tiempos[posicion] = tiempos_enviados;
     console.log("Llevo procesadas "+lineas_resueltas+". El total son :" +lineas_utiles + "\nTiempos para linea " + linea + " vale: "+ tiempos_enviados);
     if (lineas_resueltas == lineas_utiles)
       {
+      for (i = 0; i<lineas_utiles;i++)
+          {
+            tiempos = tiempos + array_tiempos[i];
+          }
       for (i = lineas_utiles;i < lineas.length;i++)
         {
-        console.log("X vale: "+i);
+        //console.log("X vale: "+i);
         tiempos = tiempos + "SPSP";
         }
       dict = {"KEY_TIPO": 0, "KEY_L1" : tiempos};
-      console.log("Mensaje enviados al pebble:" + tiempos);
+      //console.log("Mensaje enviados al pebble:" + tiempos);
       Pebble.sendAppMessage(dict);   
       }
   }
