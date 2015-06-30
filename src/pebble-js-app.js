@@ -411,7 +411,7 @@ function BuscaParadas_soap(lineas, lineas_utiles, parada,linea)
         console.log("Timed out!!!"); 
         t1 = "98";
         t2 = "98";
-        comprueba_envio(lineas, lineas_utiles, t1+t2);
+        comprueba_envio(linea, lineas, lineas_utiles, t1+t2);
       };
     
     xmlhttp.onreadystatechange = function () 
@@ -433,20 +433,25 @@ function BuscaParadas_soap(lineas, lineas_utiles, parada,linea)
               t1 = "98";
               t2 = "98";
             }
-          if (t1 > 0)
+          if (t1 > -1)
             {
               if (t1/10 < 1 && t1 > -1) t1 = "0"+t1;
               if (t2/10 < 1 && t2 > -1) t2 = "0"+t2;
-              comprueba_envio(lineas, lineas_utiles, t1+t2);
-              return true;
             }
+          else
+            {
+              t1 = "98";
+              t2 = "98";
+            }
+          comprueba_envio(linea, lineas, lineas_utiles, t1+t2);
+          return true;
           }
         else
           {
             // No hay forma de recoger los datos. Sin conexión a Internet.
             t1 = "96";
             t2 = "96";
-            comprueba_envio(lineas, lineas_utiles, t1+t2); 
+            comprueba_envio(linea, lineas, lineas_utiles, t1+t2); 
           }
         }
       };
@@ -500,11 +505,11 @@ function ResuelveParada(parada, lineas) {
 
 }
 
-function comprueba_envio(lineas, lineas_utiles, tiempos_enviados)
+function comprueba_envio(linea, lineas, lineas_utiles, tiempos_enviados)
   {
     lineas_resueltas = lineas_resueltas + 1;
     tiempos = tiempos+tiempos_enviados;
-    console.log("Llevo procesadas "+lineas_resueltas+". El total son :" +lineas_utiles + "\nTiempos vale: "+ tiempos);
+    console.log("Llevo procesadas "+lineas_resueltas+". El total son :" +lineas_utiles + "\nTiempos para linea " + linea + " vale: "+ tiempos_enviados);
     if (lineas_resueltas == lineas_utiles)
       {
       for (i = lineas_utiles;i < lineas.length;i++)

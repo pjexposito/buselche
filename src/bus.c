@@ -113,7 +113,7 @@ static void in_received_handler(DictionaryIterator *iter, void *context)
   }
   else
   {  
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Acabo de recibir datos (pebble). Retorno: %s", tiempo_retorno);
+    //APP_LOG(APP_LOG_LEVEL_DEBUG, "Acabo de recibir datos (pebble). Retorno: %s", tiempo_retorno);
     strcpy(texto,"");
     for (int v=0;v<6;v++)
       {
