@@ -113,12 +113,14 @@ static void in_received_handler(DictionaryIterator *iter, void *context)
   }
   else
   {  
-    //APP_LOG(APP_LOG_LEVEL_DEBUG, "Acabo de recibir datos (pebble). Retorno: %s", tiempo_retorno);
+    APP_LOG(APP_LOG_LEVEL_DEBUG, "Acabo de recibir datos (pebble). Retorno: %s", tiempo_retorno);
     strcpy(texto,"");
-    for (int v=0;v<6;v++)
+    for (int v=0;v<8;v++)
       {
       tiempo1[0] = '\0';
+      tiempo1[1] = '\0';
       tiempo2[0] = '\0';
+      tiempo2[1] = '\0';
       subString (tiempo_retorno, 4*v, 2, tiempo1);
       subString (tiempo_retorno, (4*v)+2, 2, tiempo2);
       //APP_LOG(APP_LOG_LEVEL_DEBUG, "V vale %i. Tiempos: %s %s", v, tiempo1, tiempo2);
@@ -158,11 +160,12 @@ static void in_received_handler(DictionaryIterator *iter, void *context)
         }
       else
         {
-        APP_LOG(APP_LOG_LEVEL_DEBUG, "pinto una vez con v= %i", v);
+        //APP_LOG(APP_LOG_LEVEL_DEBUG, "pinto una vez con v= %i", v);
         strcat(texto,"Línea ");
         strcat(texto, devuelve_linea(numero_parada(), v));
         strcat(texto, ":\n");
         strcat(texto, tiempo1);
+        APP_LOG(APP_LOG_LEVEL_DEBUG, "pinto parada %s", devuelve_linea(numero_parada(),v));
         //APP_LOG(APP_LOG_LEVEL_DEBUG, "Tiempo2 vale: %s", tiempo2);
         if (atoi(tiempo2)!=-1)
           {

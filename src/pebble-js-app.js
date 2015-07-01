@@ -523,7 +523,7 @@ function comprueba_envio(linea, lineas, lineas_utiles, tiempos_enviados, posicio
         tiempos = tiempos + "SPSP";
         }
       dict = {"KEY_TIPO": 0, "KEY_L1" : tiempos};
-      //console.log("Mensaje enviados al pebble:" + tiempos);
+      console.log("Mensaje enviados al pebble:" + tiempos);
       Pebble.sendAppMessage(dict);   
       }
   }

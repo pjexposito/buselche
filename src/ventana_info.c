@@ -4,7 +4,7 @@
 #  define COLOR_CABECERA GColorBlack
 #  define COLOR_TEXTO_CABECERA GColorWhite
 #  define COLOR_TEXTO_CUERPO GColorBlack
-#  define COLOR_CUERPO GColorCadetBlue
+#  define COLOR_CUERPO GColorMintGreen
 #else
 #  define COLOR_CABECERA GColorBlack
 #  define COLOR_TEXTO_CABECERA GColorWhite
@@ -19,7 +19,7 @@ static ScrollLayer *s_scroll_layer;
 
 static BitmapLayer *s_icon_layer, *s_fondo_layer;
 int i_parada, i_total_lineas;
-char i_lineas[200], string_parada[11];
+char i_lineas[300], string_parada[11];
 
 static GBitmap *s_icon_bitmap;
 
