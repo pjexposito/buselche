@@ -24,13 +24,21 @@ static void obtenParada(int id_, Parada* parada_){
 
 char * devuelve_datos_parada(int parada_solicitada, int dato)
   {
+    //APP_LOG(APP_LOG_LEVEL_DEBUG, "Parada %i. Total %i", parada_solicitada, total_paradas);
+    static char sin_parada[]="Parada inexistente";
+
     // Si Dato es 1, devuelve las lineas por parada. Si es 0, devuelve el nombre  
+    posicion = -1;
     for (int x=0;x<total_paradas;x++)
     {
-    if (n_paradas[x]==parada_solicitada) 
-      posicion = x;
+      if (n_paradas[x]==parada_solicitada)     
+        posicion = x;
     }
-    obtenParada(posicion, &parada);
+  
+    if (posicion >-1) 
+      obtenParada(posicion, &parada);
+    else
+      return sin_parada;
     if (dato==0) 
       return parada.nombre;
     else 

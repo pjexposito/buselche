@@ -74,12 +74,10 @@ void pinta_datos(void)
 
 void pinta_nombredeparada()
   {
-   //APP_LOG(APP_LOG_LEVEL_DEBUG, "Parada: %d y total es %d.", numero_parada(), total_paradas);
-
-  if (numero_parada() < total_paradas) 
+   //APP_LOG(APP_LOG_LEVEL_DEBUG, "Parada: %i y total es %i.", numero_parada(), total_paradas);
+  
     text_layer_set_text(mensaje_layer, devuelve_datos_parada(numero_parada(),0));
-  else
-    text_layer_set_text(mensaje_layer, "Parada inexistente");
+
 
 }
 
@@ -98,7 +96,7 @@ static void in_received_handler(DictionaryIterator *iter, void *context)
 
   if (t_tipo->value->uint32 == 1)
     {  
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Recibo parada: %s", tiempo_retorno);
+    //APP_LOG(APP_LOG_LEVEL_DEBUG, "Recibo parada: %s", tiempo_retorno);
 
 
     posicion=0;
@@ -113,7 +111,7 @@ static void in_received_handler(DictionaryIterator *iter, void *context)
   }
   else
   {  
-    APP_LOG(APP_LOG_LEVEL_DEBUG, "Acabo de recibir datos (pebble). Retorno: %s", tiempo_retorno);
+    //APP_LOG(APP_LOG_LEVEL_DEBUG, "Acabo de recibir datos (pebble). Retorno: %s", tiempo_retorno);
     strcpy(texto,"");
     for (int v=0;v<8;v++)
       {
@@ -219,7 +217,7 @@ void busca_localizacion()
       cargando = 1;
       //Borro la variable de tiempo 1 y 2 antes de volver a pedir datos.
       manda_js(1,0);
-          APP_LOG(APP_LOG_LEVEL_DEBUG, "En Pebble mando a buscar");
+          //APP_LOG(APP_LOG_LEVEL_DEBUG, "En Pebble mando a buscar");
 
 }
 
@@ -292,21 +290,13 @@ void select_click_handler(ClickRecognizerRef recognizer, void *context)
 
 			break;
 		case 2:
-      if ((numero_parada()+2 > total_paradas) || (numero_parada() == 0))
+      if (strcmp(devuelve_datos_parada(numero_parada(),0),"Parada inexistente")==0)
       {
         posicion =0;
       }
     else
       {
-      if (strcmp(devuelve_linea(numero_parada(), 0),"-")==0)
-        {
-        posicion = 0;
-        }
-      else
-        {
         envia_peticion();
-
-        }
       }
       break;    
     

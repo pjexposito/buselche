@@ -491,11 +491,12 @@ function ParadaCercana(lat, long)
 
 function ResuelveParada(parada, lineas) {
     var lineas_utiles = 0;
+      //console.log("Busco estas lineas: " + lineas + ". Hay " + lineas_utiles + " lineas útiles");
+
     for (i = 0; i < lineas.length; i++)
       if (lineas[i] != "0") 
         lineas_utiles = lineas_utiles + 1;
   
-    //console.log("Busco estas lineas: " + lineas + ". Hay " + lineas_utiles + " lineas útiles");
   
     for (i = 0; i < lineas.length; i++) { 
       if (lineas[i] != "0") 
@@ -510,7 +511,7 @@ function comprueba_envio(linea, lineas, lineas_utiles, tiempos_enviados, posicio
   {
     lineas_resueltas = lineas_resueltas + 1;
     array_tiempos[posicion] = tiempos_enviados;
-    console.log("Llevo procesadas "+lineas_resueltas+". El total son :" +lineas_utiles + "\nTiempos para linea " + linea + " vale: "+ tiempos_enviados);
+    //console.log("Llevo procesadas "+lineas_resueltas+". El total son :" +lineas_utiles + "\nTiempos para linea " + linea + " vale: "+ tiempos_enviados);
     if (lineas_resueltas == lineas_utiles)
       {
       for (i = 0; i<lineas_utiles;i++)
@@ -523,7 +524,7 @@ function comprueba_envio(linea, lineas, lineas_utiles, tiempos_enviados, posicio
         tiempos = tiempos + "SPSP";
         }
       dict = {"KEY_TIPO": 0, "KEY_L1" : tiempos};
-      console.log("Mensaje enviados al pebble:" + tiempos);
+      //console.log("Mensaje enviados al pebble:" + tiempos);
       Pebble.sendAppMessage(dict);   
       }
   }
